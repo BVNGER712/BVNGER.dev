@@ -181,7 +181,22 @@ footer .legal a{color:var(--muted);text-decoration:underline;text-underline-offs
 footer .legal a:hover{color:var(--cyan-hi)}
 
 
-.row-gallery{grid-column:1/-1;margin-top:18px;padding-top:22px;border-top:1px solid var(--line)}
+.row-gallery{grid-column:1/-1;margin-top:10px}
+.row-gallery summary{
+  display:inline-flex;align-items:center;gap:10px;list-style:none;cursor:pointer;user-select:none;
+  font-family:var(--font-mono);font-size:13px;color:#dedcf1;
+  padding:9px 16px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;
+}
+.row-gallery summary::-webkit-details-marker{display:none}
+.row-gallery summary::before{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);margin-right:2px}
+.row-gallery[open] summary::before{transform:rotate(45deg) translate(-2px,-2px)}
+.row-gallery summary:hover{background:#292744;border-color:var(--cyan);color:#fff}
+.row-gallery summary:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.row-gallery .sum-close,.row-gallery[open] .sum-open{display:none}
+.row-gallery[open] .sum-close{display:inline}
+.sum-count{font-size:11px;color:var(--muted);border:1px solid #3c405d;border-radius:999px;padding:1px 8px}
+.row-gallery[open]{margin-top:18px;padding-top:22px;border-top:1px solid var(--line)}
+.row-gallery[open] summary{margin-bottom:18px}
 .row .show-lede{max-width:64ch;margin:0 0 18px;color:var(--muted);font-size:15px}
 .feature{display:block;border:1px solid var(--line-card);border-radius:17px;overflow:hidden;background:var(--panel);box-shadow:0 18px 60px #04071480,0 0 60px #5968d724;cursor:zoom-in}
 .feature img{display:block;width:100%;height:auto}
@@ -281,10 +296,11 @@ footer .legal a:hover{color:var(--cyan-hi)}
           <p class="sub">Editions and release plans are being worked out. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/eula/">EULA</a></p>
         </div>
         <span class="tag dev">In development</span>
-        <div class="row-gallery">
+        <details class="row-gallery">
+          <summary><span class="sum-open">Show screenshots</span><span class="sum-close">Hide screenshots</span> <span class="sum-count">10</span></summary>
           <p class="show-lede">Screenshots from the built-in demo mode. Every screen uses sample data, so no real server, members or credentials appear.</p>
           <a class="feature" href="/bastion/screens/dashboard.webp" data-i="0">
-            <img src="/bastion/screens/dashboard.webp" width="1571" height="954" decoding="async" alt="Bastion dashboard showing bot status, open tickets and live activity">
+            <img src="/bastion/screens/dashboard.webp" width="1571" height="954" loading="lazy" decoding="async" alt="Bastion dashboard showing bot status, open tickets and live activity">
           </a>
           <ul class="shots">
             <li><button type="button" class="shot" data-i="0" data-full="/bastion/screens/dashboard.webp" data-title="Dashboard" data-cap="Bot status, open tickets and a live activity log, with Start, Stop and Restart.">
@@ -328,7 +344,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
               <span class="shot-t">Settings</span><span class="shot-c">Discord connection, staff roles, Windows behavior and local security.</span>
             </button></li>
           </ul>
-        </div>
+        </details>
       </li>
       <li class="row">
         <div>
@@ -396,6 +412,12 @@ footer .legal a:hover{color:var(--cyan-hi)}
   </footer>
 </div>
 <script>
+(function(){
+  var g=document.querySelector('.row-gallery');
+  function openGallery(){if(location.hash==='#bastion'&&g)g.open=true}
+  openGallery();window.addEventListener('hashchange',openGallery);
+  document.querySelectorAll('a[href="#bastion"]').forEach(function(a){a.addEventListener('click',function(){if(g)g.open=true})});
+})();
 (function(){
   var d=document.getElementById('lightbox');if(!d||!d.showModal)return;
   var items=[].slice.call(document.querySelectorAll('.shot')),i=0;
