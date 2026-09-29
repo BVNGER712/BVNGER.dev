@@ -106,6 +106,11 @@ h2{
 .tools li:first-child{border-top:1px solid var(--line)}
 .tools span:last-child{color:var(--muted);text-align:right}
 
+.join{display:flex;justify-content:space-between;align-items:center;gap:24px 40px;flex-wrap:wrap;padding:28px;border:1px solid var(--line);background:var(--surface);border-radius:2px}
+.join>div{flex:1 1 320px;min-width:0}
+.join p{margin:0;max-width:58ch}
+.join p.sub{margin-top:8px;color:var(--muted);font-size:15px}
+.join .btn{white-space:nowrap}
 .contact{border-bottom:0}
 .links{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
 .btn{
@@ -137,6 +142,7 @@ footer{padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--
     <span>~/bvnger.dev</span>
     <nav aria-label="Sections">
       <a href="#projects">Projects</a>
+      <a href="#community">Community</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -144,11 +150,11 @@ footer{padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--
 
   <div class="hero">
     <h1 class="wordmark">BVNGER<span class="dev">.dev</span></h1>
-    <p class="lede">Games, tools and mods, built solo. <span>Mobile action games in Godot, an Unreal survival prototype, and a desktop panel for running Discord servers.</span></p>
+    <p class="lede">Games, tools and mods, built solo. <span>Mobile action games in Godot and a desktop panel for running Discord servers.</span></p>
     <div class="meta">
       <span>Engines <b>Godot / UE5</b></span>
       <span>Backend <b>Cloudflare Workers + D1</b></span>
-      <span>Status <b>5 projects in progress</b></span>
+      <span>Status <b>3 projects in progress</b></span>
     </div>
   </div>
 
@@ -190,27 +196,21 @@ footer{padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--
         </div>
         <span class="tag dev">In development</span>
       </li>
-      <li class="row">
-        <div>
-          <h3>Lane Breaker</h3>
-          <div class="stack">Mobile · working title</div>
-        </div>
-        <div>
-          <p>A lane-switching action game. One thumb, fast reads, no room to hesitate.</p>
-        </div>
-        <span class="tag idea">Prototype</span>
-      </li>
-      <li class="row">
-        <div>
-          <h3>Duckov-style Survival</h3>
-          <div class="stack">Unreal Engine 5 · working title</div>
-        </div>
-        <div>
-          <p>A small-scale survival and extraction builder with hyper-realistic graphics, inspired by Escape from Duckov.</p>
-        </div>
-        <span class="tag idea">Concept</span>
-      </li>
     </ul>
+  </section>
+
+  <section id="community" class="community">
+    <div class="sec-head">
+      <h2>The Underworld</h2>
+      <span class="sec-note">Discord server</span>
+    </div>
+    <div class="join">
+      <div>
+        <p>The home for following development. Screenshots for PUSH and Bastion Server Control Panel (BastionSCP) go up here first.</p>
+        <p class="sub">In-game screenshots and footage for Uncommon Citizen are still in the works.</p>
+      </div>
+      <a class="btn primary" href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Join the server</a>
+    </div>
   </section>
 
   <section id="about" class="about">
@@ -234,11 +234,11 @@ footer{padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--
     <div class="sec-head"><h2>Contact</h2></div>
     <p style="margin:0 0 16px;max-width:52ch">Want to test a build or talk about a project? Reach out.</p>
     <div class="links">
-      <a class="btn primary" href="#contact">Discord</a>
+      <a class="btn primary" href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Discord</a>
       <a class="btn" href="https://github.com/BVNGER712" target="_blank" rel="noopener">GitHub</a>
       <a class="btn" href="#contact">Email</a>
     </div>
-    <p class="todo">Discord and Email are placeholders until real handles are added.</p>
+    <p class="todo">Email is a placeholder until a public address is added.</p>
   </section>
 
   <footer>
