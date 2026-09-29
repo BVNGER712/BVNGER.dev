@@ -182,7 +182,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
 
 
 .row-gallery{grid-column:1/-1;margin-top:10px}
-.row-gallery summary{
+.row-gallery summary,.gallery-close{
   display:inline-flex;align-items:center;gap:10px;list-style:none;cursor:pointer;user-select:none;
   font-family:var(--font-mono);font-size:13px;color:#dedcf1;
   padding:9px 16px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;
@@ -190,8 +190,10 @@ footer .legal a:hover{color:var(--cyan-hi)}
 .row-gallery summary::-webkit-details-marker{display:none}
 .row-gallery summary::before{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);margin-right:2px}
 .row-gallery[open] summary::before{transform:rotate(45deg) translate(-2px,-2px)}
-.row-gallery summary:hover{background:#292744;border-color:var(--cyan);color:#fff}
-.row-gallery summary:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.row-gallery summary:hover,.gallery-close:hover{background:#292744;border-color:var(--cyan);color:#fff}
+.row-gallery summary:focus-visible,.gallery-close:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.gallery-close{margin-top:18px}
+.gallery-close::before{content:"";width:7px;height:7px;border-left:2px solid currentColor;border-top:2px solid currentColor;transform:rotate(45deg) translate(2px,2px);margin-right:2px}
 .row-gallery .sum-close,.row-gallery[open] .sum-open{display:none}
 .row-gallery[open] .sum-close{display:inline}
 .sum-count{font-size:11px;color:var(--muted);border:1px solid #3c405d;border-radius:999px;padding:1px 8px}
@@ -242,7 +244,6 @@ footer .legal a:hover{color:var(--cyan-hi)}
     <a class="brand-mini" href="/">BVNGER</a>
     <nav aria-label="Sections">
       <a href="#projects">Projects</a>
-      <a href="#bastion">Bastion</a>
       <a href="#community">Community</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
@@ -272,17 +273,6 @@ footer .legal a:hover{color:var(--cyan-hi)}
       <span class="sec-note">Sorted by how close to shipping</span>
     </div>
     <ul class="ledger">
-      <li class="row">
-        <div>
-          <h3>PUSH</h3>
-          <div class="stack">Godot · Android</div>
-        </div>
-        <div>
-          <p>A crowd-pushing action game for mobile. Shove the pack, hold your ground, survive the crush.</p>
-          <p class="sub">Feedback from testers goes to a Cloudflare Workers and D1 backend, so every build gets real notes.</p>
-        </div>
-        <span class="tag test">In testing</span>
-      </li>
       <li class="row" id="bastion">
         <div>
           <div class="title">
@@ -344,7 +334,19 @@ footer .legal a:hover{color:var(--cyan-hi)}
               <span class="shot-t">Settings</span><span class="shot-c">Discord connection, staff roles, Windows behavior and local security.</span>
             </button></li>
           </ul>
+          <button type="button" class="gallery-close">Hide screenshots</button>
         </details>
+      </li>
+      <li class="row">
+        <div>
+          <h3>PUSH</h3>
+          <div class="stack">Godot · Android</div>
+        </div>
+        <div>
+          <p>A crowd-pushing action game for mobile. Shove the pack, hold your ground, survive the crush.</p>
+          <p class="sub">Feedback from testers goes to a Cloudflare Workers and D1 backend, so every build gets real notes.</p>
+        </div>
+        <span class="tag test">In testing</span>
       </li>
       <li class="row">
         <div>
@@ -417,6 +419,8 @@ footer .legal a:hover{color:var(--cyan-hi)}
   function openGallery(){if(location.hash==='#bastion'&&g)g.open=true}
   openGallery();window.addEventListener('hashchange',openGallery);
   document.querySelectorAll('a[href="#bastion"]').forEach(function(a){a.addEventListener('click',function(){if(g)g.open=true})});
+  var c=document.querySelector('.gallery-close');
+  if(c&&g)c.addEventListener('click',function(){g.open=false;g.closest('.row').scrollIntoView({block:'start'})});
 })();
 (function(){
   var d=document.getElementById('lightbox');if(!d||!d.showModal)return;
