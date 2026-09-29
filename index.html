@@ -181,7 +181,8 @@ footer .legal a{color:var(--muted);text-decoration:underline;text-underline-offs
 footer .legal a:hover{color:var(--cyan-hi)}
 
 
-.show-lede{max-width:64ch;margin:0 0 24px;color:#cbd0de}
+.row-gallery{grid-column:1/-1;margin-top:18px;padding-top:22px;border-top:1px solid var(--line)}
+.row .show-lede{max-width:64ch;margin:0 0 18px;color:var(--muted);font-size:15px}
 .feature{display:block;border:1px solid var(--line-card);border-radius:17px;overflow:hidden;background:var(--panel);box-shadow:0 18px 60px #04071480,0 0 60px #5968d724;cursor:zoom-in}
 .feature img{display:block;width:100%;height:auto}
 .feature:hover{border-color:#5968d7}
@@ -267,7 +268,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
         </div>
         <span class="tag test">In testing</span>
       </li>
-      <li class="row">
+      <li class="row" id="bastion">
         <div>
           <div class="title">
             <img class="emblem" src="/bastion/bastion.png" alt="Bastion emblem">
@@ -277,9 +278,57 @@ footer .legal a:hover{color:var(--cyan-hi)}
         </div>
         <div>
           <p>A control panel for running your own Discord server, with a bot behind it. Manage the server from one window instead of a pile of commands.</p>
-          <p class="sub">Editions and release plans are being worked out. <a href="#bastion">Screenshots</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/eula/">EULA</a></p>
+          <p class="sub">Editions and release plans are being worked out. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/eula/">EULA</a></p>
         </div>
         <span class="tag dev">In development</span>
+        <div class="row-gallery">
+          <p class="show-lede">Screenshots from the built-in demo mode. Every screen uses sample data, so no real server, members or credentials appear.</p>
+          <a class="feature" href="/bastion/screens/dashboard.webp" data-i="0">
+            <img src="/bastion/screens/dashboard.webp" width="1571" height="954" decoding="async" alt="Bastion dashboard showing bot status, open tickets and live activity">
+          </a>
+          <ul class="shots">
+            <li><button type="button" class="shot" data-i="0" data-full="/bastion/screens/dashboard.webp" data-title="Dashboard" data-cap="Bot status, open tickets and a live activity log, with Start, Stop and Restart.">
+              <img src="/bastion/screens/dashboard-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Dashboard screen">
+              <span class="shot-t">Dashboard</span><span class="shot-c">Bot status, open tickets and a live activity log, with Start, Stop and Restart.</span>
+            </button></li>
+            <li><button type="button" class="shot" data-i="1" data-full="/bastion/screens/announcements.webp" data-title="Announcements" data-cap="Compose with a live Discord preview, optional image, and up to two link buttons.">
+              <img src="/bastion/screens/announcements-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Announcements screen">
+              <span class="shot-t">Announcements</span><span class="shot-c">Compose with a live Discord preview, optional image, and up to two link buttons.</span>
+            </button></li>
+            <li><button type="button" class="shot" data-i="2" data-full="/bastion/screens/tickets.webp" data-title="Tickets" data-cap="Claim, open, add users to, and archive private support channels.">
+              <img src="/bastion/screens/tickets-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Tickets screen">
+              <span class="shot-t">Tickets</span><span class="shot-c">Claim, open, add users to, and archive private support channels.</span>
+            </button></li>
+            <li><button type="button" class="shot" data-i="3" data-full="/bastion/screens/onboarding.webp" data-title="Onboarding" data-cap="Auto-assign a member role and send a welcome message with placeholders.">
+              <img src="/bastion/screens/onboarding-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Onboarding screen">
+              <span class="shot-t">Onboarding</span><span class="shot-c">Auto-assign a member role and send a welcome message with placeholders.</span>
+            </button></li>
+            <li><button type="button" class="shot" data-i="4" data-full="/bastion/screens/channels.webp" data-title="Channels &amp; Roles" data-cap="Create and organize channels with safe permission presets.">
+              <img src="/bastion/screens/channels-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Channels &amp; Roles screen">
+              <span class="shot-t">Channels &amp; Roles</span><span class="shot-c">Create and organize channels with safe permission presets.</span>
+            </button></li>
+            <li><button type="button" class="shot" data-i="5" data-full="/bastion/screens/members.webp" data-title="Moderation: members" data-cap="Browse members, see protected staff roles, and apply actions.">
+              <img src="/bastion/screens/members-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Moderation: members screen">
+              <span class="shot-t">Moderation: members</span><span class="shot-c">Browse members, see protected staff roles, and apply actions.</span>
+            </button></li>
+            <li><button type="button" class="shot" data-i="6" data-full="/bastion/screens/moderation.webp" data-title="Moderation: reports" data-cap="Handle reports, review auto-mod actions, and manage word and phrase filters.">
+              <img src="/bastion/screens/moderation-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Moderation: reports screen">
+              <span class="shot-t">Moderation: reports</span><span class="shot-c">Handle reports, review auto-mod actions, and manage word and phrase filters.</span>
+            </button></li>
+            <li><button type="button" class="shot" data-i="7" data-full="/bastion/screens/health.webp" data-title="Health Check" data-cap="Verify permissions, roles, channels and safety settings in one pass.">
+              <img src="/bastion/screens/health-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Health Check screen">
+              <span class="shot-t">Health Check</span><span class="shot-c">Verify permissions, roles, channels and safety settings in one pass.</span>
+            </button></li>
+            <li><button type="button" class="shot" data-i="8" data-full="/bastion/screens/audit.webp" data-title="Audit &amp; Recovery" data-cap="Action history plus local server-structure snapshots and settings backups.">
+              <img src="/bastion/screens/audit-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Audit &amp; Recovery screen">
+              <span class="shot-t">Audit &amp; Recovery</span><span class="shot-c">Action history plus local server-structure snapshots and settings backups.</span>
+            </button></li>
+            <li><button type="button" class="shot" data-i="9" data-full="/bastion/screens/settings.webp" data-title="Settings" data-cap="Discord connection, staff roles, Windows behavior and local security.">
+              <img src="/bastion/screens/settings-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Settings screen">
+              <span class="shot-t">Settings</span><span class="shot-c">Discord connection, staff roles, Windows behavior and local security.</span>
+            </button></li>
+          </ul>
+        </div>
       </li>
       <li class="row">
         <div>
@@ -291,59 +340,6 @@ footer .legal a:hover{color:var(--cyan-hi)}
         </div>
         <span class="tag dev">In development</span>
       </li>
-    </ul>
-  </section>
-
-  <section id="bastion" class="showcase">
-    <div class="sec-head">
-      <h2>Bastion Control Panel</h2>
-      <span class="sec-note">Screenshots · demo mode</span>
-    </div>
-    <p class="show-lede">A look at BastionSCP, the Windows control panel for running a Discord server. Every screen below uses sample data from the built-in demo mode, so no real server, members or credentials appear.</p>
-    <a class="feature" href="/bastion/screens/dashboard.webp" data-i="0">
-      <img src="/bastion/screens/dashboard.webp" width="1571" height="954" decoding="async" alt="Bastion dashboard showing bot status, open tickets and live activity">
-    </a>
-    <ul class="shots">
-      <li><button type="button" class="shot" data-i="0" data-full="/bastion/screens/dashboard.webp" data-title="Dashboard" data-cap="Bot status, open tickets and a live activity log, with Start, Stop and Restart.">
-        <img src="/bastion/screens/dashboard-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Dashboard screen">
-        <span class="shot-t">Dashboard</span><span class="shot-c">Bot status, open tickets and a live activity log, with Start, Stop and Restart.</span>
-      </button></li>
-      <li><button type="button" class="shot" data-i="1" data-full="/bastion/screens/announcements.webp" data-title="Announcements" data-cap="Compose with a live Discord preview, optional image, and up to two link buttons.">
-        <img src="/bastion/screens/announcements-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Announcements screen">
-        <span class="shot-t">Announcements</span><span class="shot-c">Compose with a live Discord preview, optional image, and up to two link buttons.</span>
-      </button></li>
-      <li><button type="button" class="shot" data-i="2" data-full="/bastion/screens/tickets.webp" data-title="Tickets" data-cap="Claim, open, add users to, and archive private support channels.">
-        <img src="/bastion/screens/tickets-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Tickets screen">
-        <span class="shot-t">Tickets</span><span class="shot-c">Claim, open, add users to, and archive private support channels.</span>
-      </button></li>
-      <li><button type="button" class="shot" data-i="3" data-full="/bastion/screens/onboarding.webp" data-title="Onboarding" data-cap="Auto-assign a member role and send a welcome message with placeholders.">
-        <img src="/bastion/screens/onboarding-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Onboarding screen">
-        <span class="shot-t">Onboarding</span><span class="shot-c">Auto-assign a member role and send a welcome message with placeholders.</span>
-      </button></li>
-      <li><button type="button" class="shot" data-i="4" data-full="/bastion/screens/channels.webp" data-title="Channels &amp; Roles" data-cap="Create and organize channels with safe permission presets.">
-        <img src="/bastion/screens/channels-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Channels &amp; Roles screen">
-        <span class="shot-t">Channels &amp; Roles</span><span class="shot-c">Create and organize channels with safe permission presets.</span>
-      </button></li>
-      <li><button type="button" class="shot" data-i="5" data-full="/bastion/screens/members.webp" data-title="Moderation: members" data-cap="Browse members, see protected staff roles, and apply actions.">
-        <img src="/bastion/screens/members-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Moderation: members screen">
-        <span class="shot-t">Moderation: members</span><span class="shot-c">Browse members, see protected staff roles, and apply actions.</span>
-      </button></li>
-      <li><button type="button" class="shot" data-i="6" data-full="/bastion/screens/moderation.webp" data-title="Moderation: reports" data-cap="Handle reports, review auto-mod actions, and manage word and phrase filters.">
-        <img src="/bastion/screens/moderation-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Moderation: reports screen">
-        <span class="shot-t">Moderation: reports</span><span class="shot-c">Handle reports, review auto-mod actions, and manage word and phrase filters.</span>
-      </button></li>
-      <li><button type="button" class="shot" data-i="7" data-full="/bastion/screens/health.webp" data-title="Health Check" data-cap="Verify permissions, roles, channels and safety settings in one pass.">
-        <img src="/bastion/screens/health-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Health Check screen">
-        <span class="shot-t">Health Check</span><span class="shot-c">Verify permissions, roles, channels and safety settings in one pass.</span>
-      </button></li>
-      <li><button type="button" class="shot" data-i="8" data-full="/bastion/screens/audit.webp" data-title="Audit &amp; Recovery" data-cap="Action history plus local server-structure snapshots and settings backups.">
-        <img src="/bastion/screens/audit-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Audit &amp; Recovery screen">
-        <span class="shot-t">Audit &amp; Recovery</span><span class="shot-c">Action history plus local server-structure snapshots and settings backups.</span>
-      </button></li>
-      <li><button type="button" class="shot" data-i="9" data-full="/bastion/screens/settings.webp" data-title="Settings" data-cap="Discord connection, staff roles, Windows behavior and local security.">
-        <img src="/bastion/screens/settings-thumb.webp" width="560" height="340" loading="lazy" decoding="async" alt="Bastion Settings screen">
-        <span class="shot-t">Settings</span><span class="shot-c">Discord connection, staff roles, Windows behavior and local security.</span>
-      </button></li>
     </ul>
   </section>
 
