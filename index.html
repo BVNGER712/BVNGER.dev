@@ -4,144 +4,183 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BVNGER.dev</title>
+<meta name="description" content="Games, tools and mods by BVNGER. PUSH, Bastion and Scrap County.">
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" href="/bastion/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one long "build log" page. Oversized condensed wordmark, then a ruled project ledger with status tags, then a short about and contact block. */
+/* Layout: one long page in Bastion's UI language. Navy ground with a violet glow, letter-spaced condensed caps, rounded gradient cards, and a cyan-to-violet gradient used only on the wordmark, rules and scrollbar. */
 :root{
-  --bg:#0e1116;
-  --surface:#151a22;
-  --line:#262e3a;
-  --fg:#e8ebf0;
-  --muted:#8a94a3;
-  --accent:#ffb020;
-  --accent-ink:#1a1204;
-  --ok:#5ad19a;
-  --wip:#ffb020;
-  --idea:#7aa2ff;
-  --font-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
-  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --font-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --bg:#0b1020;
+  --glow-violet:#29204b;
+  --glow-cyan:#0e3644;
+  --panel:#101625;
+  --card-a:#1d1e39;
+  --card-b:#131729;
+  --line:#2a3552;
+  --line-soft:#343755;
+  --line-card:#3b3d5d;
+  --fg:#d5d7e8;
+  --fg-strong:#f4f1ff;
+  --muted:#aab3c8;
+  --dim:#8993aa;
+  --cyan:#29c9d2;
+  --cyan-hi:#7fe8f0;
+  --indigo:#5968d7;
+  --violet:#a14ad6;
+  --violet-hi:#d477ee;
+  --link:#bdb2ff;
+  --amber:#f5b957;
+  --teal:#39dccf;
+  --ink:#06222b;
+  --brand-gradient:linear-gradient(90deg,#29c9d2 0%,#5968d7 52%,#a14ad6 100%);
+  --font-display:"Barlow Semi Condensed","Bahnschrift","Arial Narrow",sans-serif;
+  --font-body:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Cascadia Mono,Consolas,monospace;
   color-scheme:dark;
 }
-@media (prefers-color-scheme:light){
-  :root:not([data-theme="dark"]){
-    --bg:#f3f4f6;--surface:#ffffff;--line:#d5d9e0;--fg:#141922;--muted:#5a6473;
-    --accent:#b86e00;--accent-ink:#ffffff;--ok:#12805a;--wip:#b86e00;--idea:#2f55c9;
-    color-scheme:light;
-  }
-}
-:root[data-theme="light"]{
-  --bg:#f3f4f6;--surface:#ffffff;--line:#d5d9e0;--fg:#141922;--muted:#5a6473;
-  --accent:#b86e00;--accent-ink:#ffffff;--ok:#12805a;--wip:#b86e00;--idea:#2f55c9;
-  color-scheme:light;
-}
 *{box-sizing:border-box}
+html{scrollbar-color:#5968d7 #0a0f1c}
 body{
-  background:var(--bg);color:var(--fg);
-  font-family:var(--font-body);font-size:16px;line-height:1.6;
+  margin:0;min-height:100vh;
+  background:
+    radial-gradient(ellipse at 12% -8%,var(--glow-violet) 0,transparent 36%),
+    radial-gradient(ellipse at 96% 2%,var(--glow-cyan) 0,transparent 30%),
+    var(--bg);
+  background-color:var(--bg);
+  color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;
   padding-inline:20px;padding-block:0 48px;
 }
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:#0a0f1c;border:1px solid #25304a;border-radius:6px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#29c9d2,#5968d7 52%,#a14ad6);border:1px solid #536b9c;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{border-color:var(--cyan-hi)}
+::selection{background:#5968d7;color:#fff}
 .wrap{max-width:1040px;margin-inline:auto}
-a{color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+a{color:var(--link)}
+a:hover{color:#e2dcff}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 
 header.top{
   display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
-  padding-block:20px;border-bottom:1px solid var(--line);
-  font-family:var(--font-mono);font-size:13px;color:var(--muted);
+  padding-block:20px;border-bottom:1px solid var(--line-soft);
 }
-header.top nav{display:flex;gap:20px;flex-wrap:wrap}
-header.top a{text-decoration:none}
-header.top a:hover{color:var(--accent)}
+.brand-mini{font-family:var(--font-display);font-weight:800;letter-spacing:.16em;color:var(--fg-strong);text-decoration:none;font-size:15px}
+header.top nav{display:flex;gap:6px;flex-wrap:wrap}
+header.top nav a{
+  border:1px solid #3c405d;border-radius:8px;padding:8px 13px;text-decoration:none;
+  font-size:13px;color:#dedcf1;
+}
+header.top nav a:hover{background:#292744;color:#fff}
 
-.hero{padding-block:56px 48px;border-bottom:1px solid var(--line)}
-.wordmark{
-  font-family:var(--font-display);font-weight:900;text-transform:uppercase;
-  font-size:clamp(72px,19vw,208px);line-height:.82;letter-spacing:-.01em;margin:0;
+.hero{padding-block:60px 52px;border-bottom:1px solid var(--line-soft)}
+.eyebrow{
+  font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.22em;
+  color:#ba9bff;margin:0 0 14px;text-transform:uppercase;
 }
-.wordmark .dev{color:var(--accent)}
-.lede{max-width:56ch;margin:28px 0 0;font-size:19px;color:var(--fg)}
+.wordmark{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(44px,12vw,160px);line-height:.9;letter-spacing:.03em;margin:0;color:var(--fg-strong);
+}
+.wordmark .dev{
+  background:var(--brand-gradient);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:var(--cyan);
+}
+.rule{height:3px;width:min(320px,60%);background:var(--brand-gradient);border-radius:2px;margin:28px 0 0}
+.lede{max-width:56ch;margin:24px 0 0;font-size:19px;color:var(--fg)}
 .lede span{color:var(--muted)}
 .meta{
-  margin-top:28px;display:flex;gap:10px 24px;flex-wrap:wrap;
-  font-family:var(--font-mono);font-size:12.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;
+  margin-top:26px;display:flex;gap:10px 24px;flex-wrap:wrap;
+  font-family:var(--font-mono);font-size:12.5px;color:var(--dim);letter-spacing:.04em;text-transform:uppercase;
 }
-.meta b{color:var(--fg);font-weight:500}
+.meta b{color:var(--cyan-hi);font-weight:500}
 
-section{padding-block:48px;border-bottom:1px solid var(--line)}
-.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+section{padding-block:52px;border-bottom:1px solid var(--line-soft)}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
 h2{
-  font-family:var(--font-display);font-weight:700;text-transform:uppercase;
-  font-size:clamp(32px,6vw,52px);line-height:1;margin:0;letter-spacing:.01em;text-wrap:balance;
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(30px,5.5vw,46px);line-height:1.05;margin:0;letter-spacing:.06em;color:var(--fg-strong);text-wrap:balance;
 }
-.sec-note{font-family:var(--font-mono);font-size:12.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.sec-note{font-family:var(--font-mono);font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
 
-.ledger{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.ledger{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 .row{
-  display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto;gap:8px 32px;
-  padding-block:24px;border-bottom:1px solid var(--line);align-items:start;
+  display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr) auto;gap:10px 32px;align-items:start;
+  padding:26px 28px;border:1px solid var(--line-card);border-radius:17px;
+  background:linear-gradient(150deg,var(--card-a),var(--card-b));
 }
 .row h3{
-  font-family:var(--font-display);font-weight:700;text-transform:uppercase;
-  font-size:34px;line-height:1;margin:0;letter-spacing:.01em;
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:30px;line-height:1.05;margin:0;letter-spacing:.06em;color:var(--fg-strong);
 }
-.row .stack{font-family:var(--font-mono);font-size:12px;color:var(--muted);margin-top:8px;letter-spacing:.03em}
-.row p{margin:0;color:var(--fg);max-width:62ch}
+.title{display:flex;align-items:center;gap:14px;min-width:0}
+.emblem{width:56px;height:56px;object-fit:contain;flex:none;filter:drop-shadow(0 0 14px #5968d799)}
+.stack{font-family:var(--font-mono);font-size:12px;color:var(--dim);margin-top:8px;letter-spacing:.03em}
+.row p{margin:0;max-width:62ch;color:#cbd0de}
 .row p.sub{color:var(--muted);margin-top:8px;font-size:15px}
 .tag{
   font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
-  padding:4px 10px;border:1px solid currentColor;border-radius:2px;white-space:nowrap;justify-self:end;
+  padding:5px 11px;border:1px solid currentColor;border-radius:999px;white-space:nowrap;justify-self:end;
 }
-.tag.test{color:var(--ok)}
-.tag.dev{color:var(--wip)}
-.tag.idea{color:var(--idea)}
+.tag.test{color:var(--teal);background:#39dccf14}
+.tag.dev{color:var(--amber);background:#f5b95714}
+
+.join{
+  display:flex;justify-content:space-between;align-items:center;gap:24px 40px;flex-wrap:wrap;
+  padding:30px 32px;border:1px solid var(--line-card);border-radius:17px;
+  background:linear-gradient(150deg,var(--card-a),var(--card-b));
+}
+.join>div{flex:1 1 320px;min-width:0}
+.join p{margin:0;max-width:58ch;color:#cbd0de}
+.join p.sub{margin-top:8px;color:var(--muted);font-size:15px}
 
 .about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px 56px}
-.about p{margin:0 0 16px;max-width:60ch}
+.about p{margin:0 0 16px;max-width:60ch;color:#cbd0de}
 .about p:last-child{margin-bottom:0}
+.about h2{margin-bottom:24px}
 .tools{list-style:none;margin:0;padding:0;font-family:var(--font-mono);font-size:14px}
-.tools li{display:flex;justify-content:space-between;gap:16px;padding-block:10px;border-bottom:1px solid var(--line)}
+.tools li{display:flex;justify-content:space-between;gap:16px;padding-block:11px;border-bottom:1px solid var(--line)}
 .tools li:first-child{border-top:1px solid var(--line)}
-.tools span:last-child{color:var(--muted);text-align:right}
+.tools span:first-child{color:var(--muted)}
+.tools span:last-child{color:var(--cyan-hi);text-align:right}
 
-.join{display:flex;justify-content:space-between;align-items:center;gap:24px 40px;flex-wrap:wrap;padding:28px;border:1px solid var(--line);background:var(--surface);border-radius:2px}
-.join>div{flex:1 1 320px;min-width:0}
-.join p{margin:0;max-width:58ch}
-.join p.sub{margin-top:8px;color:var(--muted);font-size:15px}
-.join .btn{white-space:nowrap}
 .contact{border-bottom:0}
-.links{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 .btn{
-  font-family:var(--font-mono);font-size:14px;text-decoration:none;
-  padding:12px 18px;border:1px solid var(--line);border-radius:2px;background:var(--surface);
+  font-family:var(--font-mono);font-size:14px;text-decoration:none;color:#dedcf1;
+  padding:12px 20px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;white-space:nowrap;
 }
-.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
-.btn:hover{border-color:var(--accent)}
-.todo{color:var(--muted);font-family:var(--font-mono);font-size:12.5px;margin-top:20px}
+.btn:hover{background:#292744;border-color:var(--cyan);color:#fff}
+.btn.primary{background:var(--cyan);color:var(--ink);border-color:var(--cyan);font-weight:500}
+.btn.primary:hover{background:var(--cyan-hi);border-color:var(--cyan-hi);color:var(--ink)}
+.todo{color:var(--dim);font-family:var(--font-mono);font-size:12.5px;margin-top:20px}
 
-footer .legal a{text-decoration:underline;text-underline-offset:3px}
-footer .legal a:hover{color:var(--accent)}
-footer{padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer{
+  padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--dim);
+  display:flex;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;
+}
+footer .legal a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+footer .legal a:hover{color:var(--cyan-hi)}
 
 @media (max-width:760px){
-  .row{grid-template-columns:minmax(0,1fr);gap:10px}
+  .row{grid-template-columns:minmax(0,1fr);gap:12px;padding:22px 20px}
   .tag{justify-self:start;order:-1}
   .about{grid-template-columns:minmax(0,1fr)}
-  .hero{padding-block:36px 36px}
+  .hero{padding-block:38px 38px}
+  .join{padding:24px 20px}
 }
 @media (prefers-reduced-motion:no-preference){
-  .row{transition:background .15s}
-  .row:hover{background:var(--surface)}
+  .row,.btn,header.top nav a{transition:border-color .15s,background-color .15s}
+  .row:hover{border-color:#5968d7}
 }
 </style>
-
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <span>~/bvnger.dev</span>
+    <a class="brand-mini" href="/">BVNGER</a>
     <nav aria-label="Sections">
       <a href="#projects">Projects</a>
       <a href="#community">Community</a>
@@ -151,10 +190,12 @@ footer{padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--
   </header>
 
   <div class="hero">
+    <p class="eyebrow">Games · Tools · Mods</p>
     <h1 class="wordmark">BVNGER<span class="dev">.dev</span></h1>
+    <div class="rule" aria-hidden="true"></div>
     <p class="lede">Games, tools and mods, built solo. <span>Mobile action games in Godot and a desktop panel for running Discord servers.</span></p>
     <div class="meta">
-      <span>Engines <b>Godot / UE5</b></span>
+      <span>Engine <b>Godot</b></span>
       <span>Backend <b>Cloudflare Workers + D1</b></span>
       <span>Status <b>3 projects in progress</b></span>
     </div>
@@ -179,12 +220,15 @@ footer{padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--
       </li>
       <li class="row">
         <div>
-          <h3>Bastion</h3>
+          <div class="title">
+            <img class="emblem" src="/bastion/bastion.png" alt="Bastion emblem">
+            <h3>Bastion</h3>
+          </div>
           <div class="stack">Windows desktop · Discord bot</div>
         </div>
         <div>
           <p>A control panel for running your own Discord server, with a bot behind it. Manage the server from one window instead of a pile of commands.</p>
-          <p class="sub">Editions and release plans are being worked out.</p>
+          <p class="sub">Editions and release plans are being worked out. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/eula/">EULA</a></p>
         </div>
         <span class="tag dev">In development</span>
       </li>
@@ -217,12 +261,12 @@ footer{padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--
 
   <section id="about" class="about">
     <div>
-      <h2 style="margin-bottom:24px">About</h2>
+      <h2>About</h2>
       <p>I build games and the tools around them. Most of it starts as a small prototype that gets tested on real phones before it grows.</p>
       <p>I also make single-player mod menus for games I play, and I run my own Discord server tooling.</p>
     </div>
     <div>
-      <h2 style="margin-bottom:24px">Toolbox</h2>
+      <h2>Toolbox</h2>
       <ul class="tools">
         <li><span>Game engines</span><span>Godot, Unreal Engine 5</span></li>
         <li><span>Backend</span><span>Cloudflare Workers, D1</span></li>
@@ -234,7 +278,7 @@ footer{padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--
 
   <section id="contact" class="contact">
     <div class="sec-head"><h2>Contact</h2></div>
-    <p style="margin:0 0 16px;max-width:52ch">Want to test a build or talk about a project? Reach out.</p>
+    <p style="margin:0 0 16px;max-width:52ch;color:#cbd0de">Want to test a build or talk about a project? Reach out.</p>
     <div class="links">
       <a class="btn primary" href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Discord</a>
       <a class="btn" href="https://github.com/BVNGER712" target="_blank" rel="noopener">GitHub</a>
