@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bastion Pricing · BVNGER.dev</title>
+<meta name="description" content="Bastion plans and pricing. A Windows control panel and Discord bot for running your server, for one monthly price.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="BVNGER.dev">
+<meta property="og:title" content="Bastion Pricing · BVNGER.dev">
+<meta property="og:description" content="Tickets, moderation, onboarding, announcements and backups in one app. One monthly price.">
+<meta property="og:url" content="https://bvnger.dev/pricing/">
+<meta property="og:image" content="https://bvnger.dev/bvnger-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" href="/bastion/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Same tokens and components as the home page, so the two read as one site. */
+:root{
+  --bg:#0b1020;
+  --glow-violet:#29204b;
+  --glow-cyan:#0e3644;
+  --panel:#101625;
+  --card-a:#1d1e39;
+  --card-b:#131729;
+  --line:#2a3552;
+  --line-soft:#343755;
+  --line-card:#3b3d5d;
+  --fg:#d5d7e8;
+  --fg-strong:#f4f1ff;
+  --muted:#aab3c8;
+  --dim:#8993aa;
+  --cyan:#29c9d2;
+  --cyan-hi:#7fe8f0;
+  --indigo:#5968d7;
+  --violet:#a14ad6;
+  --violet-hi:#d477ee;
+  --link:#bdb2ff;
+  --amber:#f5b957;
+  --teal:#39dccf;
+  --ink:#06222b;
+  --brand-gradient:linear-gradient(90deg,#29c9d2 0%,#5968d7 52%,#a14ad6 100%);
+  --font-display:"Barlow Semi Condensed","Bahnschrift","Arial Narrow",sans-serif;
+  --font-body:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Cascadia Mono,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scrollbar-color:#5968d7 #0a0f1c}
+body{
+  margin:0;min-height:100vh;
+  background:
+    radial-gradient(ellipse at 12% -8%,var(--glow-violet) 0,transparent 36%),
+    radial-gradient(ellipse at 96% 2%,var(--glow-cyan) 0,transparent 30%),
+    var(--bg);
+  background-color:var(--bg);
+  color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;
+  padding-inline:20px;padding-block:0 48px;
+}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:#0a0f1c;border:1px solid #25304a;border-radius:6px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#29c9d2,#5968d7 52%,#a14ad6);border:1px solid #536b9c;border-radius:6px}
+::selection{background:#5968d7;color:#fff}
+.wrap{max-width:1040px;margin-inline:auto}
+a{color:var(--link)}
+a:hover{color:#e2dcff}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+
+header.top{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  padding-block:20px;border-bottom:1px solid var(--line-soft);
+}
+.brand-mini{font-family:var(--font-display);font-weight:800;letter-spacing:.16em;color:var(--fg-strong);text-decoration:none;font-size:15px}
+header.top nav{display:flex;gap:6px;flex-wrap:wrap}
+header.top nav a{
+  border:1px solid #3c405d;border-radius:8px;padding:8px 13px;text-decoration:none;
+  font-size:13px;color:#dedcf1;
+}
+header.top nav a:hover{background:#292744;color:#fff}
+header.top nav a[aria-current]{border-color:var(--cyan);color:#fff}
+
+.hero{padding-block:56px 44px;border-bottom:1px solid var(--line-soft)}
+.eyebrow{
+  font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.22em;
+  color:#ba9bff;margin:0 0 14px;text-transform:uppercase;
+}
+.title{display:flex;align-items:center;gap:18px}
+.emblem{width:72px;height:72px;object-fit:contain;flex:none;filter:drop-shadow(0 0 18px #5968d799)}
+h1{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(44px,7vw,84px);line-height:.9;letter-spacing:.03em;margin:0;color:var(--fg-strong);
+}
+.rule{height:3px;width:min(320px,60%);background:var(--brand-gradient);border-radius:2px;margin:26px 0 0}
+.lede{max-width:58ch;margin:22px 0 0;font-size:19px;color:var(--fg)}
+.lede span{color:var(--muted)}
+
+section{padding-block:48px;border-bottom:1px solid var(--line-soft)}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+h2{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(30px,5.5vw,46px);line-height:1.05;margin:0;letter-spacing:.06em;color:var(--fg-strong);
+}
+.sec-note{font-family:var(--font-mono);font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+
+.notice{
+  display:none;margin:0 0 22px;padding:14px 18px;border:1px solid currentColor;border-radius:12px;
+  font-size:15px;
+}
+.notice.show{display:block}
+.notice.ok{color:var(--teal);background:#39dccf14}
+.notice.warn{color:var(--amber);background:#f5b95714}
+
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:stretch}
+.plan{
+  display:flex;flex-direction:column;gap:18px;
+  padding:30px 30px 28px;border:1px solid var(--line-card);border-radius:17px;
+  background:linear-gradient(150deg,var(--card-a),var(--card-b));
+}
+.plan.featured{border-color:#5968d7;box-shadow:0 0 60px #5968d724}
+.plan-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.plan h3{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:30px;line-height:1.05;margin:0;letter-spacing:.06em;color:var(--fg-strong);
+}
+.plan .for{margin:6px 0 0;color:var(--muted);font-size:15px}
+.tag{
+  font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 11px;border:1px solid currentColor;border-radius:999px;white-space:nowrap;
+}
+.tag.live{color:var(--teal);background:#39dccf14}
+.tag.soon{color:var(--amber);background:#f5b95714}
+.price{display:flex;align-items:baseline;gap:8px;margin:0}
+.price b{font-family:var(--font-display);font-weight:800;font-size:56px;line-height:1;color:var(--fg-strong);letter-spacing:.01em}
+.price span{font-family:var(--font-mono);font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+.trial{margin:-8px 0 0;font-family:var(--font-mono);font-size:12.5px;color:var(--cyan-hi);letter-spacing:.04em}
+.features{list-style:none;margin:0;padding:0;display:grid;gap:9px;flex:1}
+.features li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;color:#cbd0de;font-size:15px;line-height:1.5}
+.features li::before{
+  content:"";width:9px;height:5px;margin-top:7px;margin-left:3px;
+  border-left:2px solid var(--cyan);border-bottom:2px solid var(--cyan);transform:rotate(-45deg);
+}
+.features li.plus::before{border-color:var(--violet-hi,#d477ee)}
+.features strong{color:var(--fg-strong);font-weight:600}
+
+.btn{
+  display:inline-flex;justify-content:center;align-items:center;
+  font-family:var(--font-mono);font-size:14px;text-decoration:none;color:#dedcf1;
+  padding:13px 20px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;white-space:nowrap;cursor:pointer;
+}
+.btn:hover{background:#292744;border-color:var(--cyan);color:#fff}
+.btn.primary{background:var(--cyan);color:var(--ink);border-color:var(--cyan);font-weight:500}
+.btn.primary:hover{background:var(--cyan-hi);border-color:var(--cyan-hi);color:var(--ink)}
+.btn[disabled],.btn[aria-disabled="true"]{background:#141a2e;border-color:#3c405d;color:var(--dim);cursor:not-allowed}
+.plan .btn{width:100%}
+.fine{margin:0;font-size:13px;color:var(--dim);text-align:center}
+
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.fact{padding:24px 24px 22px;border:1px solid var(--line-card);border-radius:17px;background:var(--panel)}
+.fact h3{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  font-size:19px;margin:0 0 8px;color:var(--fg-strong);
+}
+.fact p{margin:0;color:var(--muted);font-size:15px}
+
+.faq{display:grid;gap:10px}
+.faq details{border:1px solid var(--line-card);border-radius:14px;background:linear-gradient(150deg,var(--card-a),var(--card-b))}
+.faq summary{
+  cursor:pointer;list-style:none;padding:18px 22px;display:flex;justify-content:space-between;gap:16px;align-items:center;
+  font-weight:600;color:var(--fg-strong);
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:8px;height:8px;border-right:2px solid var(--cyan);border-bottom:2px solid var(--cyan);transform:rotate(45deg);margin-top:-4px}
+.faq details[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.faq details p{margin:0;padding:0 22px 20px;color:#cbd0de;max-width:70ch}
+
+footer{
+  padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--dim);
+  display:flex;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;
+}
+footer .legal a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+footer .legal a:hover{color:var(--cyan-hi)}
+
+@media (max-width:760px){
+  .hero{padding-block:38px 34px}
+  .emblem{width:56px;height:56px}
+  .plans,.facts{grid-template-columns:minmax(0,1fr)}
+  .plan{padding:24px 20px}
+  .price b{font-size:48px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn,header.top nav a,.plan{transition:border-color .15s,background-color .15s}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand-mini" href="/">BVNGER</a>
+    <nav aria-label="Site">
+      <a href="/#projects">Projects</a>
+      <a href="/pricing/" aria-current="page">Pricing</a>
+      <a href="/#community">Community</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <p class="eyebrow">Bastion Server Control Panel</p>
+    <div class="title">
+      <img class="emblem" src="/bastion/bastion.png" width="72" height="72" alt="Bastion emblem">
+      <h1>Pricing</h1>
+    </div>
+    <div class="rule" aria-hidden="true"></div>
+    <p class="lede">One app instead of a stack of bot subscriptions. <span>Tickets, moderation, onboarding, announcements and backups, run from a Windows control panel.</span></p>
+  </div>
+
+  <section id="plans">
+    <p class="notice ok" id="notice-success" role="status">Payment received. Your license key is on its way to your email. Check spam if it hasn't arrived in a few minutes.</p>
+    <p class="notice warn" id="notice-cancel" role="status">Checkout was canceled. You haven't been charged.</p>
+    <p class="notice warn" id="notice-error" role="alert">Checkout couldn't be started. Please try again, or ask for help in the Discord server.</p>
+
+    <div class="plans">
+      <article class="plan featured" aria-labelledby="standard-name">
+        <div class="plan-head">
+          <div>
+            <h3 id="standard-name">Standard</h3>
+            <p class="for">Runs on your own Windows PC or server.</p>
+          </div>
+          <span class="tag live">Available</span>
+        </div>
+        <p class="price"><b>$4.99</b><span>/ month</span></p>
+        <p class="trial">7-day free trial</p>
+        <ul class="features">
+          <li><span><strong>Windows control panel</strong> with guided setup and connection checks</span></li>
+          <li><span><strong>Support tickets</strong> with claim, close, reopen and protected transcripts</span></li>
+          <li><span><strong>Moderation</strong>: reports, word filter, warnings, timeouts, kicks and bans with history</span></li>
+          <li><span><strong>Announcements</strong> with live preview, images, role targeting and link buttons</span></li>
+          <li><span><strong>Onboarding</strong>: auto roles and custom welcome messages</span></li>
+          <li><span><strong>Server management</strong>: channels, permission presets, guarded cleanup</span></li>
+          <li><span><strong>Health checks</strong> and desktop alerts</span></li>
+          <li><span><strong>Backups</strong>: settings backups and server structure snapshots</span></li>
+          <li><span>Automatic updates</span></li>
+        </ul>
+        <button type="button" class="btn primary" data-plan="standard">Start free trial</button>
+        <p class="fine">Billed monthly after the trial. Cancel anytime.</p>
+      </article>
+
+      <article class="plan" aria-labelledby="hosted-name">
+        <div class="plan-head">
+          <div>
+            <h3 id="hosted-name">Hosted</h3>
+            <p class="for">We keep your bot online around the clock.</p>
+          </div>
+          <span class="tag soon">Coming soon</span>
+        </div>
+        <p class="price"><b>$9.99</b><span>/ month</span></p>
+        <p class="trial">Planned</p>
+        <ul class="features">
+          <li><span><strong>Everything in Standard</strong></span></li>
+          <li class="plus"><span><strong>Bot online 24/7</strong>, even when your PC is off</span></li>
+          <li class="plus"><span>Tickets, reports, welcomes and filters keep working overnight</span></li>
+          <li class="plus"><span>Upgrade from Standard without reinstalling</span></li>
+        </ul>
+        <button type="button" class="btn" disabled>Coming soon</button>
+        <p class="fine">Follow progress in the <a href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Discord server</a>.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="sec-head">
+      <h2>How it works</h2>
+      <span class="sec-note">Standard plan</span>
+    </div>
+    <div class="facts">
+      <div class="fact">
+        <h3>1 · Subscribe</h3>
+        <p>Checkout is handled by Stripe. Your license key is emailed to you right after.</p>
+      </div>
+      <div class="fact">
+        <h3>2 · Activate</h3>
+        <p>Install Bastion, paste your key, and follow the guided setup to connect your Discord bot.</p>
+      </div>
+      <div class="fact">
+        <h3>3 · Keep it running</h3>
+        <p>The bot runs on your machine. Tickets, welcomes and filters work while Bastion is running.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="sec-head"><h2>Questions</h2></div>
+    <div class="faq">
+      <details>
+        <summary>Does my computer need to stay on?</summary>
+        <p>On Standard, yes, for features that respond to members, such as tickets, reports, welcome messages and the word filter. Posting announcements, moderating and managing channels only need Bastion running while you use them. The Hosted plan will remove this requirement.</p>
+      </details>
+      <details>
+        <summary>How do I cancel?</summary>
+        <p>You can cancel anytime from the billing link in your receipt email. Bastion keeps working until the end of the period you've paid for.</p>
+      </details>
+      <details>
+        <summary>Is full server restore included?</summary>
+        <p>Snapshots and read-only comparison are included now. Full server structure restore is still in development and will arrive as an update at no extra cost.</p>
+      </details>
+      <details>
+        <summary>Is my Discord bot token sent to you?</summary>
+        <p>No. On Standard, your bot token stays on your computer. See the <a href="/privacy/">Privacy Policy</a> for details.</p>
+      </details>
+    </div>
+  </section>
+
+  <footer>
+    <span>BVNGER.dev</span>
+    <span class="legal">Bastion legal: <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a> · <a href="/eula/">EULA</a></span>
+  </footer>
+</div>
+<script>
+(function(){
+  // Set this to the license API's checkout route once it is deployed.
+  // It should accept POST {"plan":"standard"} and return {"url":"https://checkout.stripe.com/..."}.
+  var CHECKOUT_ENDPOINT = "";
+
+  var q = new URLSearchParams(location.search).get("checkout");
+  if (q === "success") document.getElementById("notice-success").classList.add("show");
+  if (q === "cancel") document.getElementById("notice-cancel").classList.add("show");
+
+  document.querySelectorAll("button[data-plan]").forEach(function(btn){
+    if (!CHECKOUT_ENDPOINT) {
+      btn.disabled = true;
+      btn.textContent = "Checkout opens at launch";
+      return;
+    }
+    btn.addEventListener("click", function(){
+      var label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Opening checkout…";
+      fetch(CHECKOUT_ENDPOINT, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({plan: btn.dataset.plan})
+      })
+        .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function(d){ if (!d.url) throw new Error("no url"); location.href = d.url; })
+        .catch(function(){
+          document.getElementById("notice-error").classList.add("show");
+          btn.disabled = false;
+          btn.textContent = label;
+        });
+    });
+  });
+})();
+</script>
+</body>
+</html>
