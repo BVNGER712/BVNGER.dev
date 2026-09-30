@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download Bastion · BVNGER.dev</title>
+<meta name="description" content="Download Bastion for Windows. Requirements, install steps, and what happens to your data.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="BVNGER.dev">
+<meta property="og:title" content="Download Bastion · BVNGER.dev">
+<meta property="og:description" content="Bastion for Windows: a control panel and Discord bot for running your server.">
+<meta property="og:url" content="https://bvnger.dev/download/">
+<meta property="og:image" content="https://bvnger.dev/bvnger-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" href="/bastion/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Same tokens and components as the home and pricing pages. */
+:root{
+  --bg:#0b1020;
+  --glow-violet:#29204b;
+  --glow-cyan:#0e3644;
+  --panel:#101625;
+  --card-a:#1d1e39;
+  --card-b:#131729;
+  --line:#2a3552;
+  --line-soft:#343755;
+  --line-card:#3b3d5d;
+  --fg:#d5d7e8;
+  --fg-strong:#f4f1ff;
+  --muted:#aab3c8;
+  --dim:#8993aa;
+  --cyan:#29c9d2;
+  --cyan-hi:#7fe8f0;
+  --indigo:#5968d7;
+  --violet:#a14ad6;
+  --link:#bdb2ff;
+  --amber:#f5b957;
+  --teal:#39dccf;
+  --ink:#06222b;
+  --brand-gradient:linear-gradient(90deg,#29c9d2 0%,#5968d7 52%,#a14ad6 100%);
+  --font-display:"Barlow Semi Condensed","Bahnschrift","Arial Narrow",sans-serif;
+  --font-body:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Cascadia Mono,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scrollbar-color:#5968d7 #0a0f1c}
+body{
+  margin:0;min-height:100vh;
+  background:
+    radial-gradient(ellipse at 12% -8%,var(--glow-violet) 0,transparent 36%),
+    radial-gradient(ellipse at 96% 2%,var(--glow-cyan) 0,transparent 30%),
+    var(--bg);
+  background-color:var(--bg);
+  color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;
+  padding-inline:20px;padding-block:0 48px;
+}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:#0a0f1c;border:1px solid #25304a;border-radius:6px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#29c9d2,#5968d7 52%,#a14ad6);border:1px solid #536b9c;border-radius:6px}
+::selection{background:#5968d7;color:#fff}
+.wrap{max-width:1040px;margin-inline:auto}
+a{color:var(--link)}
+a:hover{color:#e2dcff}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+code{font-family:var(--font-mono);font-size:.88em;color:var(--cyan-hi);background:#141a2e;border:1px solid var(--line);border-radius:6px;padding:1px 6px;overflow-wrap:anywhere}
+
+header.top{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  padding-block:20px;border-bottom:1px solid var(--line-soft);
+}
+.brand-mini{font-family:var(--font-display);font-weight:800;letter-spacing:.16em;color:var(--fg-strong);text-decoration:none;font-size:15px}
+header.top nav{display:flex;gap:6px;flex-wrap:wrap}
+header.top nav a{
+  border:1px solid #3c405d;border-radius:8px;padding:8px 13px;text-decoration:none;
+  font-size:13px;color:#dedcf1;
+}
+header.top nav a:hover{background:#292744;color:#fff}
+header.top nav a[aria-current]{border-color:var(--cyan);color:#fff}
+
+.hero{padding-block:56px 44px;border-bottom:1px solid var(--line-soft)}
+.eyebrow{
+  font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.22em;
+  color:#ba9bff;margin:0 0 14px;text-transform:uppercase;
+}
+.title{display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap}
+.emblem{width:72px;height:72px;object-fit:contain;flex:none;filter:drop-shadow(0 0 18px #5968d799)}
+h1{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(44px,7vw,84px);line-height:.9;letter-spacing:.03em;margin:0;color:var(--fg-strong);
+}
+.rule{height:3px;width:min(320px,60%);background:var(--brand-gradient);border-radius:2px;margin:26px 0 0}
+.lede{max-width:58ch;margin:22px 0 0;font-size:19px;color:var(--fg)}
+.lede span{color:var(--muted)}
+
+section{padding-block:48px;border-bottom:1px solid var(--line-soft)}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+h2{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(30px,5.5vw,46px);line-height:1.05;margin:0;letter-spacing:.06em;color:var(--fg-strong);
+}
+.sec-note{font-family:var(--font-mono);font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+
+.tag{
+  font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 11px;border:1px solid currentColor;border-radius:999px;white-space:nowrap;
+}
+.tag.live{color:var(--teal);background:#39dccf14}
+.tag.soon{color:var(--amber);background:#f5b95714}
+
+.get{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:24px 40px;align-items:center;
+  padding:30px;border:1px solid #5968d7;border-radius:17px;box-shadow:0 0 60px #5968d724;
+  background:linear-gradient(150deg,var(--card-a),var(--card-b));
+}
+.get-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.get h3{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:30px;line-height:1.05;margin:0;letter-spacing:.06em;color:var(--fg-strong);
+}
+.get p{margin:0;color:#cbd0de}
+.get .meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px 20px;font-family:var(--font-mono);font-size:12.5px;color:var(--dim);letter-spacing:.04em;text-transform:uppercase}
+.get .meta b{color:var(--cyan-hi);font-weight:500}
+.get-actions{display:grid;gap:10px}
+.btn{
+  display:inline-flex;justify-content:center;align-items:center;
+  font-family:var(--font-mono);font-size:14px;text-decoration:none;color:#dedcf1;
+  padding:13px 20px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;white-space:nowrap;cursor:pointer;
+}
+.btn:hover{background:#292744;border-color:var(--cyan);color:#fff}
+.btn.primary{background:var(--cyan);color:var(--ink);border-color:var(--cyan);font-weight:500}
+.btn.primary:hover{background:var(--cyan-hi);border-color:var(--cyan-hi);color:var(--ink)}
+.btn[aria-disabled="true"]{background:#141a2e;border-color:#3c405d;color:var(--dim);cursor:not-allowed;pointer-events:none}
+.fine{margin:0;font-size:13px;color:var(--dim);text-align:center}
+
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{padding:24px 24px 22px;border:1px solid var(--line-card);border-radius:17px;background:var(--panel)}
+.card h3{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  font-size:19px;margin:0 0 12px;color:var(--fg-strong);
+}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.checks li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;color:#cbd0de;font-size:15px;line-height:1.5}
+.checks li::before{
+  content:"";width:9px;height:5px;margin-top:7px;margin-left:3px;
+  border-left:2px solid var(--cyan);border-bottom:2px solid var(--cyan);transform:rotate(-45deg);
+}
+.checks strong{color:var(--fg-strong);font-weight:600}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:step}
+.steps li{
+  counter-increment:step;display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 16px;
+  padding:20px 22px;border:1px solid var(--line-card);border-radius:14px;
+  background:linear-gradient(150deg,var(--card-a),var(--card-b));
+}
+.steps li::before{
+  content:counter(step);grid-row:span 2;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;
+  font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--ink);background:var(--brand-gradient);
+}
+.steps h3{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  font-size:19px;margin:0;color:var(--fg-strong);align-self:center;
+}
+.steps p{margin:0;color:var(--muted);font-size:15px}
+.steps p strong{color:var(--fg-strong);font-weight:600}
+.callout{
+  margin-top:14px;padding:14px 18px;border:1px solid var(--amber);border-radius:12px;
+  background:#f5b95714;color:var(--fg);font-size:15px;
+}
+.callout strong{color:var(--amber)}
+
+.help{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+
+footer{
+  padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--dim);
+  display:flex;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;
+}
+footer .legal a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+footer .legal a:hover{color:var(--cyan-hi)}
+
+@media (max-width:760px){
+  .hero{padding-block:38px 34px}
+  .emblem{width:56px;height:56px}
+  .get{grid-template-columns:minmax(0,1fr);padding:24px 20px}
+  .grid2{grid-template-columns:minmax(0,1fr)}
+  .steps li{grid-template-columns:36px minmax(0,1fr);padding:18px 16px}
+  .steps li::before{width:36px;height:36px;font-size:18px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn,header.top nav a{transition:border-color .15s,background-color .15s}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand-mini" href="/">BVNGER</a>
+    <nav aria-label="Site">
+      <a href="/#projects">Projects</a>
+      <a href="/pricing/">Pricing</a>
+      <a href="/download/" aria-current="page">Download</a>
+      <a href="/#community">Community</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <p class="eyebrow">Bastion Server Control Panel</p>
+    <div class="title">
+      <img class="emblem" src="/bastion/bastion.png" width="72" height="72" alt="Bastion emblem">
+      <h1>Download</h1>
+    </div>
+    <div class="rule" aria-hidden="true"></div>
+    <p class="lede">Bastion for Windows. <span>Install the control panel, connect your Discord bot, and run your server from one window.</span></p>
+  </div>
+
+  <section id="get">
+    <div class="get">
+      <div>
+        <div class="get-head">
+          <h3>Bastion for Windows</h3>
+          <span class="tag soon" id="release-tag">Launching soon</span>
+        </div>
+        <p id="release-note">The installer will be available here at launch. Subscribe on the <a href="/pricing/">pricing page</a> to get your license key, then come back to download.</p>
+        <div class="meta">
+          <span>Platform <b>Windows 10 &amp; 11, 64-bit</b></span>
+          <span id="release-version" hidden>Version <b></b></span>
+          <span id="release-publisher" hidden>Publisher <b>William Kurtz</b></span>
+        </div>
+      </div>
+      <div class="get-actions">
+        <a class="btn primary" id="download-btn" href="#get" aria-disabled="true">Available at launch</a>
+        <a class="btn" href="/pricing/">See plans &amp; pricing</a>
+        <p class="fine">Includes a 7-day free trial.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="requirements">
+    <div class="sec-head">
+      <h2>Before you start</h2>
+      <span class="sec-note">About 10 minutes to set up</span>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Your PC</h3>
+        <ul class="checks">
+          <li><span><strong>Windows 10 or 11</strong>, 64-bit</span></li>
+          <li><span>An internet connection</span></li>
+          <li><span><strong>No extra software needed.</strong> Everything Bastion needs is included in the installer.</span></li>
+          <li><span><strong>No administrator access needed.</strong> Bastion installs for your Windows user only.</span></li>
+          <li><span>For tickets, welcome messages and the word filter to work around the clock, the PC needs to stay on with Bastion running.</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Discord</h3>
+        <ul class="checks">
+          <li><span>A <strong>Discord server you own</strong></span></li>
+          <li><span>A <strong>bot application</strong> created in the <a href="https://discord.com/developers/applications" target="_blank" rel="noopener">Discord Developer Portal</a></span></li>
+          <li><span><strong>Server Members Intent</strong> and <strong>Message Content Intent</strong> turned on for that bot</span></li>
+          <li><span>The bot <strong>invited to your server</strong></span></li>
+          <li><span>Your <strong>server ID</strong>: turn on Developer Mode in Discord, right-click the server icon and choose <em>Copy Server ID</em></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="sec-head">
+      <h2>Install</h2>
+      <span class="sec-note">Standard plan</span>
+    </div>
+    <ol class="steps">
+      <li>
+        <h3>Subscribe</h3>
+        <p>Choose a plan on the <a href="/pricing/">pricing page</a>. Sign in with Discord, pick your server, and <strong>copy your license key</strong>. It's only shown once.</p>
+      </li>
+      <li>
+        <h3>Download and run the installer</h3>
+        <p>Run the file you downloaded. Bastion installs and opens on its own, and adds a Start menu entry.</p>
+      </li>
+      <li>
+        <h3>Follow the Setup Assistant</h3>
+        <p>Paste your <strong>bot token</strong> and <strong>server ID</strong>. Bastion checks the bot's permissions before it finishes setup. When asked, enter your <strong>license key</strong>.</p>
+      </li>
+      <li>
+        <h3>Start the bot</h3>
+        <p>Click <strong>Start Bot</strong> on the dashboard. From then on you can run tickets, moderation, onboarding and announcements from the control panel.</p>
+      </li>
+    </ol>
+    <p class="callout"><strong>If Windows shows "Windows protected your PC":</strong> this can appear for newer apps that Windows hasn't seen many times yet. Click <em>More info</em>, check that the publisher is <strong>William Kurtz</strong>, then click <em>Run anyway</em>. If the publisher is anything else, don't run the file, and let us know.</p>
+  </section>
+
+  <section id="data">
+    <div class="sec-head">
+      <h2>Your data</h2>
+      <span class="sec-note">Stays on your PC</span>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>What stays local</h3>
+        <ul class="checks">
+          <li><span>Your settings, history, backups and server snapshots are stored on your PC, in your Windows user's app data folder.</span></li>
+          <li><span>Your <strong>bot token is encrypted</strong> for your Windows user.</span></li>
+          <li><span>Bastion <strong>doesn't send your server's messages, members or records</strong> to us. License checks only send your license key, a random installation ID and the app version.</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Updates &amp; uninstalling</h3>
+        <ul class="checks">
+          <li><span><strong>Bastion updates itself.</strong> Each update is checked against its published fingerprint before it installs.</span></li>
+          <li><span>Updates and reinstalls <strong>keep your settings and history</strong>.</span></li>
+          <li><span>Uninstall from <em>Windows Settings → Apps</em>. Your local data isn't deleted automatically, so you can reinstall without losing anything, or delete it yourself.</span></li>
+          <li><span>Uninstalling doesn't cancel your subscription. See <a href="/terms/#billing">how to cancel</a>.</span></li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin:18px 0 0;color:var(--muted);font-size:15px">Full details are in the <a href="/privacy/">Privacy Policy</a>.</p>
+  </section>
+
+  <section id="help" style="border-bottom:0">
+    <div class="sec-head"><h2>Need help?</h2></div>
+    <p style="margin:0;max-width:60ch;color:#cbd0de">Stuck on setup, or something isn't working? Ask in the Discord server or email support.</p>
+    <div class="help">
+      <a class="btn primary" href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Ask in Discord</a>
+      <a class="btn" href="mailto:support@bvnger.dev">support@bvnger.dev</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>BVNGER.dev</span>
+    <span class="legal">Bastion legal: <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a> · <a href="/eula/">EULA</a> · <a href="/refunds/">Refunds</a></span>
+  </footer>
+</div>
+<script>
+(function(){
+  // Fill these in when the production release is published. While url is empty, the download button stays disabled.
+  var RELEASE = {
+    url: "",        // e.g. the Velopack Setup.exe link on Cloudflare R2
+    version: "",    // e.g. "1.0.0"
+    signed: false   // set true once the installer is code-signed
+  };
+  if (!RELEASE.url) return;
+
+  var btn = document.getElementById("download-btn");
+  btn.href = RELEASE.url;
+  btn.removeAttribute("aria-disabled");
+  btn.textContent = "Download for Windows";
+
+  var tag = document.getElementById("release-tag");
+  tag.textContent = "Available";
+  tag.className = "tag live";
+  document.getElementById("release-note").innerHTML =
+    'Download the installer below. You\'ll need a license key from the <a href="/pricing/">pricing page</a> during setup.';
+
+  if (RELEASE.version) {
+    var v = document.getElementById("release-version");
+    v.querySelector("b").textContent = RELEASE.version;
+    v.hidden = false;
+  }
+  if (RELEASE.signed) document.getElementById("release-publisher").hidden = false;
+})();
+</script>
+<script src="/rain.js" defer></script>
+</body>
+</html>
