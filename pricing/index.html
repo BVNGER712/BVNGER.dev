@@ -121,7 +121,7 @@ h2{
   background:linear-gradient(150deg,var(--card-a),var(--card-b));
 }
 .plan.featured{border-color:#5968d7;box-shadow:0 0 60px #5968d724}
-.plan-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.plan-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:12px}
 .plan h3{
   font-family:var(--font-display);font-weight:800;text-transform:uppercase;
   font-size:30px;line-height:1.05;margin:0;letter-spacing:.06em;color:var(--fg-strong);
@@ -157,6 +157,24 @@ h2{
 .btn[disabled],.btn[aria-disabled="true"]{background:#141a2e;border-color:#3c405d;color:var(--dim);cursor:not-allowed}
 .plan .btn{width:100%}
 .fine{margin:0;font-size:13px;color:var(--dim);text-align:center}
+.acct{display:grid;gap:12px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.acct[hidden],.acct [hidden]{display:none}
+.acct-line{margin:0;font-size:14px;color:var(--muted)}
+.acct-line strong{color:var(--fg-strong);font-weight:600}
+.acct-field{display:grid;gap:6px;font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.acct-field select{
+  font:inherit;font-family:var(--font-body);font-size:15px;letter-spacing:0;text-transform:none;color:var(--fg-strong);
+  padding:10px 12px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;
+}
+.acct-field select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.acct-key{display:grid;gap:8px}
+.btn[hidden]{display:none}
+.key-row{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.key-row code{
+  flex:1 1 200px;min-width:0;overflow-wrap:anywhere;font-family:var(--font-mono);font-size:13px;color:var(--cyan-hi);
+  padding:10px 12px;border:1px solid var(--line-card);border-radius:10px;background:#0a0f1c;
+}
+.key-row .btn{width:auto;padding:10px 16px}
 
 .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .fact{padding:24px 24px 22px;border:1px solid var(--line-card);border-radius:17px;background:var(--panel)}
@@ -220,7 +238,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
   </div>
 
   <section id="plans">
-    <p class="notice ok" id="notice-success" role="status">Payment received. Your license key is on its way to your email. Check spam if it hasn't arrived in a few minutes.</p>
+    <p class="notice ok" id="notice-success" role="status">Payment received. Your license key will appear on this page once the subscription is confirmed.</p>
     <p class="notice warn" id="notice-cancel" role="status">Checkout was canceled. You haven't been charged.</p>
     <p class="notice warn" id="notice-staging" role="status">Staging test mode. Checkout uses Stripe's sandbox, so no real money moves. Pay with test card 4242 4242 4242 4242, any future date and any CVC.</p>
     <p class="notice warn" id="notice-error" role="alert">Checkout couldn't be started. Please try again, or ask for help in the Discord server.</p>
@@ -247,6 +265,17 @@ footer .legal a:hover{color:var(--cyan-hi)}
           <li><span><strong>Backups</strong>: settings backups and server structure snapshots</span></li>
           <li><span>Automatic updates</span></li>
         </ul>
+        <div class="acct" id="acct" hidden>
+          <p class="acct-line" id="acct-status"></p>
+          <label class="acct-field" id="acct-server-wrap" hidden>
+            <span>Discord server</span>
+            <select id="acct-server"></select>
+          </label>
+          <div class="acct-key" id="acct-key" hidden>
+            <p class="acct-line"><strong>Your license key</strong>. Copy it now. It won't be shown again.</p>
+            <div class="key-row"><code id="acct-key-value"></code><button type="button" class="btn" id="acct-key-copy">Copy</button></div>
+          </div>
+        </div>
         <button type="button" class="btn primary" data-plan="standard">Start free trial</button>
         <p class="fine">Billed monthly after the trial. Cancel anytime.</p>
       </article>
@@ -281,7 +310,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
     <div class="facts">
       <div class="fact">
         <h3>1 · Subscribe</h3>
-        <p>Checkout is handled by Stripe. Your license key is emailed to you right after.</p>
+        <p>Sign in with Discord, pick your server, and check out with Stripe. Your license key appears right after.</p>
       </div>
       <div class="fact">
         <h3>2 · Activate</h3>
@@ -327,44 +356,215 @@ footer .legal a:hover{color:var(--cyan-hi)}
 </div>
 <script>
 (function(){
-  // The license API's checkout route: POST {"plan":"standard"} returns {"url":"https://checkout.stripe.com/..."}.
-  // Production stays empty until launch. Staging (Stripe test mode) only runs when the page is opened with ?staging=1.
-  var PRODUCTION_ENDPOINT = "";
-  var STAGING_ENDPOINT = "https://api-staging.bvnger.dev/checkout";
+  // License API. Flow: Discord sign-in -> pick an owned server -> Stripe Checkout -> show the license key once.
+  // The session is an HttpOnly cookie on the API host, so every call sends credentials.
+  // Production stays empty until launch. Staging (Stripe test mode) only runs after the page is opened with ?staging=1.
+  var PRODUCTION_API = "";
+  var STAGING_API = "https://api-staging.bvnger.dev";
+  var STAGING_FLAG = "bastion-staging";
 
   var params = new URLSearchParams(location.search);
-  var staging = params.get("staging") === "1";
-  var CHECKOUT_ENDPOINT = staging ? STAGING_ENDPOINT : PRODUCTION_ENDPOINT;
-  if (staging) document.getElementById("notice-staging").classList.add("show");
+  var staging = false;
+  try {
+    // The API's fixed return URLs drop ?staging=1, so remember it for this tab.
+    if (params.get("staging") === "1") sessionStorage.setItem(STAGING_FLAG, "1");
+    if (params.get("staging") === "0") sessionStorage.removeItem(STAGING_FLAG);
+    staging = sessionStorage.getItem(STAGING_FLAG) === "1";
+  } catch (e) {
+    staging = params.get("staging") === "1";
+  }
+  var API = staging ? STAGING_API : PRODUCTION_API;
 
-  var q = params.get("checkout");
-  if (q === "success") document.getElementById("notice-success").classList.add("show");
-  if (q === "cancel") document.getElementById("notice-cancel").classList.add("show");
+  var btn = document.querySelector("button[data-plan]");
+  var acct = document.getElementById("acct");
+  var status = document.getElementById("acct-status");
+  var serverWrap = document.getElementById("acct-server-wrap");
+  var serverSelect = document.getElementById("acct-server");
+  var keyBox = document.getElementById("acct-key");
+  var keyValue = document.getElementById("acct-key-value");
+  var errorNote = document.getElementById("notice-error");
+  var action = null;
 
-  document.querySelectorAll("button[data-plan]").forEach(function(btn){
-    if (!CHECKOUT_ENDPOINT) {
-      btn.disabled = true;
-      btn.textContent = "Checkout opens at launch";
+  function show(id){ document.getElementById(id).classList.add("show"); }
+  function fail(msg){ errorNote.textContent = msg; errorNote.classList.add("show"); }
+  function clearFail(){ errorNote.classList.remove("show"); }
+  function setButton(label, fn){ btn.textContent = label; btn.disabled = !fn; action = fn; }
+  function api(path, body){
+    var opts = {credentials: "include"};
+    if (body) {
+      opts.method = "POST";
+      opts.headers = {"Content-Type": "application/json"};
+      opts.body = JSON.stringify(body);
+    }
+    return fetch(API + path, opts);
+  }
+
+  var checkout = params.get("checkout");
+  if (checkout === "success") show("notice-success");
+  if (checkout === "cancel") show("notice-cancel");
+
+  if (!API) {
+    setButton("Checkout opens at launch", null);
+    return;
+  }
+
+  show("notice-staging");
+  acct.hidden = false;
+  btn.addEventListener("click", function(){ if (action) action(); });
+
+  function signIn(){
+    try { sessionStorage.setItem(STAGING_FLAG, "1"); } catch (e) {}
+    location.href = API + "/auth/discord/start";
+  }
+
+  function signedOut(){
+    status.textContent = "Sign in with Discord to choose the server this subscription is for.";
+    serverWrap.hidden = true;
+    setButton("Sign in with Discord", signIn);
+  }
+
+  function licenseText(l){
+    var parts = [];
+    if (typeof l.plan === "string") parts.push("Plan: " + l.plan);
+    if (typeof l.status === "string") parts.push("Status: " + l.status);
+    return parts.length ? " " + parts.join(" · ") + "." : "";
+  }
+
+  function render(a){
+    var guilds = Array.isArray(a.ownedGuilds) ? a.ownedGuilds : [];
+    if (a.license) {
+      serverWrap.hidden = true;
+      status.innerHTML = "<strong>Subscription active.</strong>";
+      status.appendChild(document.createTextNode(licenseText(a.license)));
+      if (keyBox.hidden) setButton("Show license key", revealKey);
       return;
     }
-    btn.addEventListener("click", function(){
-      var label = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = "Opening checkout…";
-      fetch(CHECKOUT_ENDPOINT, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({plan: btn.dataset.plan})
+    if (!guilds.length) {
+      serverWrap.hidden = true;
+      status.textContent = "Signed in, but this Discord account doesn't own a server. Bastion needs a server you own.";
+      setButton("No server available", null);
+      return;
+    }
+    status.innerHTML = "<strong>Signed in with Discord.</strong> Choose the server for this subscription.";
+    serverSelect.textContent = "";
+    var selected = a.selectedGuildId ? String(a.selectedGuildId) : (guilds.length === 1 ? String(guilds[0].id) : "");
+    if (!selected) {
+      var placeholder = new Option("Choose a server…", "");
+      placeholder.disabled = true;
+      serverSelect.add(placeholder);
+    }
+    guilds.forEach(function(g){ serverSelect.add(new Option(g.name || String(g.id), String(g.id))); });
+    serverSelect.value = selected;
+    serverWrap.hidden = false;
+    setButton("Start free trial", selected ? startCheckout : null);
+  }
+
+  serverSelect.addEventListener("change", function(){
+    var id = serverSelect.value;
+    clearFail();
+    setButton("Saving server…", null);
+    api("/account/server", {guild_id: id})
+      .then(function(r){
+        if (r.status === 401) return signedOut();
+        if (!r.ok) throw new Error(r.status);
+        setButton("Start free trial", startCheckout);
       })
-        .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function(d){ if (!d.url) throw new Error("no url"); location.href = d.url; })
-        .catch(function(){
-          document.getElementById("notice-error").classList.add("show");
-          btn.disabled = false;
-          btn.textContent = label;
-        });
-    });
+      .catch(function(){
+        fail("That server couldn't be selected. Please try again.");
+        setButton("Start free trial", null);
+      });
   });
+
+  function startCheckout(){
+    clearFail();
+    setButton("Opening checkout…", null);
+    api("/checkout", {plan: btn.dataset.plan})
+      .then(function(r){
+        if (r.status === 401) { signedOut(); return null; }
+        if (r.status === 409) throw new Error("conflict");
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      })
+      .then(function(d){
+        if (!d) return;
+        if (!d.url) throw new Error("no url");
+        location.href = d.url;
+      })
+      .catch(function(e){
+        fail(e.message === "conflict"
+          ? "That server already has a subscription, or no server is selected."
+          : "Checkout couldn't be started. Please try again, or ask for help in the Discord server.");
+        setButton("Start free trial", startCheckout);
+      });
+  }
+
+  function revealKey(){
+    clearFail();
+    setButton("Generating key…", null);
+    api("/license/key", {})
+      .then(function(r){
+        if (r.status === 401) { signedOut(); return null; }
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      })
+      .then(function(d){
+        if (!d) return;
+        var key = d.key || d.licenseKey || d.license_key;
+        if (!key) throw new Error("no key");
+        keyValue.textContent = key;
+        keyBox.hidden = false;
+        btn.hidden = true;
+      })
+      .catch(function(){
+        fail("The license key couldn't be shown. If it was already shown once, ask for help in the Discord server.");
+        setButton("Show license key", revealKey);
+      });
+  }
+
+  document.getElementById("acct-key-copy").addEventListener("click", function(){
+    var b = this;
+    function done(){ b.textContent = "Copied"; }
+    try {
+      navigator.clipboard.writeText(keyValue.textContent).then(done, selectKey);
+    } catch (e) { selectKey(); }
+  });
+  function selectKey(){
+    var range = document.createRange();
+    range.selectNodeContents(keyValue);
+    var sel = getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  // After Stripe returns, the webhook may land a few seconds later, so poll briefly for the license.
+  function load(tries){
+    setButton("Checking sign-in…", null);
+    api("/account")
+      .then(function(r){
+        if (r.status === 401) { signedOut(); return null; }
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      })
+      .then(function(a){
+        if (!a) return;
+        if (checkout === "success" && !a.license) {
+          if (tries > 0) {
+            status.textContent = "Confirming your subscription…";
+            setTimeout(function(){ load(tries - 1); }, 2000);
+          } else {
+            status.textContent = "Payment went through, but the subscription isn't confirmed yet. Check again in a minute.";
+            setButton("Check again", function(){ load(5); });
+          }
+          return;
+        }
+        render(a);
+      })
+      .catch(function(){
+        status.textContent = "Couldn't reach the license service.";
+        setButton("Try again", function(){ clearFail(); load(0); });
+      });
+  }
+  load(checkout === "success" ? 10 : 0);
 })();
 </script>
 </body>
