@@ -96,6 +96,7 @@ h1{
 .rule{height:3px;width:min(320px,60%);background:var(--brand-gradient);border-radius:2px;margin:26px 0 0}
 .lede{max-width:58ch;margin:22px 0 0;font-size:19px;color:var(--fg)}
 .lede span{color:var(--muted)}
+.launch{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;margin:22px 0 0;font-size:15px;color:var(--muted)}
 
 section{padding-block:48px;border-bottom:1px solid var(--line-soft)}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
@@ -174,7 +175,7 @@ h2{
 .faq summary::-webkit-details-marker{display:none}
 .faq summary::after{content:"";flex:none;width:8px;height:8px;border-right:2px solid var(--cyan);border-bottom:2px solid var(--cyan);transform:rotate(45deg);margin-top:-4px}
 .faq details[open] summary::after{transform:rotate(-135deg);margin-top:4px}
-.faq details p{margin:0;padding:0 22px 20px;color:#cbd0de;max-width:70ch}
+.faq details p{margin:0;padding:0 22px 20px;color:#cbd0de;text-wrap:pretty}
 
 footer{
   padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--dim);
@@ -215,6 +216,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
     </div>
     <div class="rule" aria-hidden="true"></div>
     <p class="lede">One app instead of a stack of bot subscriptions. <span>Tickets, moderation, onboarding, announcements and backups, run from a Windows control panel.</span></p>
+    <p class="launch"><span class="tag soon">Launching soon</span> <span>Checkout opens once licensing is live. <a href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Join the Discord</a> to hear first.</span></p>
   </div>
 
   <section id="plans">
@@ -229,7 +231,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
             <h3 id="standard-name">Standard</h3>
             <p class="for">Runs on your own Windows PC or server.</p>
           </div>
-          <span class="tag live">Available</span>
+          <span class="tag live">At launch</span>
         </div>
         <p class="price"><b>$4.99</b><span>/ month</span></p>
         <p class="trial">7-day free trial</p>
@@ -294,6 +296,10 @@ footer .legal a:hover{color:var(--cyan-hi)}
   <section id="faq">
     <div class="sec-head"><h2>Questions</h2></div>
     <div class="faq">
+      <details>
+        <summary>Is Bastion safe to install on my PC?</summary>
+        <p>Bastion is a regular Windows app that runs under your own account. It connects to Discord to run your bot, and to BVNGER only to check your license and download updates. Your bot token is encrypted for your Windows user, and your server settings, records and backups stay on your computer. We don't collect your server's messages or members, and we never sell data. You can stop it anytime and uninstall it like any other app. The <a href="/privacy/">Privacy Policy</a> lists exactly what it stores and where.</p>
+      </details>
       <details>
         <summary>Does my computer need to stay on?</summary>
         <p>On Standard, yes, for features that respond to members, such as tickets, reports, welcome messages and the word filter. Posting announcements, moderating and managing channels only need Bastion running while you use them. The Hosted plan will remove this requirement.</p>
