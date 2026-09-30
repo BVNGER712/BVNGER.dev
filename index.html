@@ -144,6 +144,8 @@ h2{
 }
 .tag.test{color:var(--teal);background:#39dccf14}
 .tag.dev{color:var(--amber);background:#f5b95714}
+a.tag{text-decoration:none}
+a.tag.dev:hover{background:#f5b95729;color:var(--amber)}
 
 .join{
   display:flex;justify-content:space-between;align-items:center;gap:24px 40px;flex-wrap:wrap;
@@ -289,7 +291,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
           <p class="pitch"><strong>No more stacking bot subscriptions.</strong> Tickets, welcome messages, auto-mod, announcements and audit logs, all in one app.</p>
           <p class="sub"><a href="/pricing/">Plans and pricing</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/eula/">EULA</a></p>
         </div>
-        <span class="tag dev">In development</span>
+        <a class="tag dev" href="/pricing/">Launching soon</a>
         <details class="row-gallery">
           <summary><span class="sum-open">Show screenshots</span><span class="sum-close">Hide screenshots</span> <span class="sum-count">10</span></summary>
           <p class="show-lede">Screenshots from the built-in demo mode. Every screen uses sample data, so no real server, members or credentials appear.</p>
@@ -407,14 +409,13 @@ footer .legal a:hover{color:var(--cyan-hi)}
     <div class="links">
       <a class="btn primary" href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Discord</a>
       <a class="btn" href="https://github.com/BVNGER712" target="_blank" rel="noopener">GitHub</a>
-      <a class="btn" href="#contact">Email</a>
+      <a class="btn" href="mailto:support@bvnger.dev">support@bvnger.dev</a>
     </div>
-    <p class="todo">Email is a placeholder until a public address is added.</p>
   </section>
 
   <footer>
     <span>BVNGER.dev</span>
-    <span class="legal">Bastion legal: <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a> · <a href="/eula/">EULA</a></span>
+    <span class="legal">Bastion legal: <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a> · <a href="/eula/">EULA</a> · <a href="/refunds/">Refunds</a></span>
   </footer>
 </div>
 <script>
