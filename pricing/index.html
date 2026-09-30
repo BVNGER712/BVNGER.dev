@@ -437,6 +437,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
   function signedOut(){
     status.textContent = "Sign in with Discord to choose the server this subscription is for.";
     serverWrap.hidden = true;
+    document.getElementById("acct-tools").hidden = true;
     setButton("Sign in with Discord", signIn);
   }
 
@@ -449,24 +450,16 @@ footer .legal a:hover{color:var(--cyan-hi)}
 
   function render(a){
     var guilds = Array.isArray(a.ownedGuilds) ? a.ownedGuilds : [];
-    if (a.license) {
-      serverWrap.hidden = true;
-      status.innerHTML = "<strong>Subscription active.</strong>";
-      var server = guilds.filter(function(g){ return String(g.id) === String(a.selectedGuildId); })[0];
-      status.appendChild(document.createTextNode(licenseText(a.license) +
-        (server ? " Server: " + (server.name || "Unnamed") + " (ID " + server.id + ")." : "") +
-        " Getting a key creates a new one and replaces any key you had before."));
-      document.getElementById("acct-tools").hidden = false;
-      if (keyBox.hidden) setButton("Get license key", revealKey);
-      return;
-    }
+    var tools = document.getElementById("acct-tools");
     if (!guilds.length) {
       serverWrap.hidden = true;
+      tools.hidden = true;
       status.textContent = "Signed in, but this Discord account doesn't own a server. Bastion needs a server you own.";
       setButton("No server available", null);
       return;
     }
-    status.innerHTML = "<strong>Signed in with Discord.</strong> Choose the server for this subscription.";
+
+    // The server picker always shows, so owners of several servers can switch between them.
     serverSelect.textContent = "";
     var selected = a.selectedGuildId ? String(a.selectedGuildId) : (guilds.length === 1 ? String(guilds[0].id) : "");
     if (!selected) {
@@ -477,22 +470,36 @@ footer .legal a:hover{color:var(--cyan-hi)}
     guilds.forEach(function(g){ serverSelect.add(new Option(g.name || String(g.id), String(g.id))); });
     serverSelect.value = selected;
     serverWrap.hidden = false;
+
+    if (a.license) {
+      status.innerHTML = "<strong>Subscription active.</strong>";
+      status.appendChild(document.createTextNode(licenseText(a.license) +
+        " Server ID " + selected + ". Getting a key creates a new one and replaces any key you had before."));
+      tools.hidden = false;
+      if (keyBox.hidden) setButton("Get license key", revealKey);
+      return;
+    }
+    tools.hidden = true;
+    status.innerHTML = "<strong>Signed in with Discord.</strong> Choose the server for this subscription.";
     setButton("Start free trial", selected ? startCheckout : null);
   }
 
   serverSelect.addEventListener("change", function(){
     var id = serverSelect.value;
     clearFail();
+    keyBox.hidden = true;
+    btn.hidden = false;
+    done.hidden = true;
     setButton("Saving server…", null);
     api("/account/server", {guild_id: id})
       .then(function(r){
-        if (r.status === 401) return signedOut();
+        if (r.status === 401) { signedOut(); return; }
         if (!r.ok) throw new Error(r.status);
-        setButton("Start free trial", startCheckout);
+        load(0);   // reload so the page shows this server's own subscription state
       })
       .catch(function(){
         fail("That server couldn't be selected. Please try again.");
-        setButton("Start free trial", null);
+        load(0);
       });
   });
 
