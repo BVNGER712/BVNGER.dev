@@ -169,6 +169,9 @@ h2{
 .acct-field select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .acct-key{display:grid;gap:8px}
 .btn[hidden]{display:none}
+.acct-tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:8px}
+.acct-tools .btn{width:auto;padding:10px 12px;font-size:13px;white-space:normal;text-align:center}
+.acct-done{color:var(--teal)}
 .key-row{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
 .key-row code{
   flex:1 1 200px;min-width:0;overflow-wrap:anywhere;font-family:var(--font-mono);font-size:13px;color:var(--cyan-hi);
@@ -276,6 +279,11 @@ footer .legal a:hover{color:var(--cyan-hi)}
             <p class="acct-line"><strong>Your license key</strong>. Copy it now. It won't be shown again.</p>
             <div class="key-row"><code id="acct-key-value"></code><button type="button" class="btn" id="acct-key-copy">Copy</button></div>
           </div>
+          <div class="acct-tools" id="acct-tools" hidden>
+            <button type="button" class="btn" id="acct-reset">Reset activated computer</button>
+            <button type="button" class="btn" id="acct-billing">Manage billing</button>
+          </div>
+          <p class="acct-line acct-done" id="acct-done" role="status" hidden></p>
         </div>
         <button type="button" class="btn primary" data-plan="standard">Start free trial</button>
         <p class="fine">Billed monthly after the trial. Cancel anytime.</p>
@@ -436,8 +444,10 @@ footer .legal a:hover{color:var(--cyan-hi)}
     if (a.license) {
       serverWrap.hidden = true;
       status.innerHTML = "<strong>Subscription active.</strong>";
-      status.appendChild(document.createTextNode(licenseText(a.license)));
-      if (keyBox.hidden) setButton("Show license key", revealKey);
+      status.appendChild(document.createTextNode(licenseText(a.license) +
+        " Getting a key creates a new one and replaces any key you had before."));
+      document.getElementById("acct-tools").hidden = false;
+      if (keyBox.hidden) setButton("Get license key", revealKey);
       return;
     }
     if (!guilds.length) {
@@ -527,10 +537,55 @@ footer .legal a:hover{color:var(--cyan-hi)}
         btn.hidden = true;
       })
       .catch(function(){
-        fail("The license key couldn't be shown. If it was already shown once, ask for help in the Discord server.");
-        setButton("Show license key", revealKey);
+        fail("The license key couldn't be created. Please try again, or ask for help in the Discord server.");
+        setButton("Get license key", revealKey);
       });
   }
+
+  var done = document.getElementById("acct-done");
+  function doneMsg(text){ done.textContent = text; done.hidden = false; }
+
+  // Frees the license from the computer it was activated on, so it can be activated on another one.
+  document.getElementById("acct-reset").addEventListener("click", function(){
+    if (!confirm("Reset the computer this license is activated on? Bastion on that computer will need to be activated again.")) return;
+    var b = this;
+    clearFail();
+    b.disabled = true;
+    api("/license/reset", {})
+      .then(function(r){
+        if (r.status === 401) { signedOut(); return null; }
+        if (!r.ok) return describe(r);
+        return r.json();
+      })
+      .then(function(d){
+        if (!d) return;
+        doneMsg("Done. You can now activate your license on this or another computer.");
+      })
+      .catch(function(e){ fail("The computer couldn't be reset (" + (e.message || "network error") + ")."); })
+      .then(function(){ b.disabled = false; });
+  });
+
+  // Opens Stripe's billing portal to cancel, change the card, or see invoices.
+  document.getElementById("acct-billing").addEventListener("click", function(){
+    var b = this;
+    clearFail();
+    b.disabled = true;
+    api("/billing/portal", {})
+      .then(function(r){
+        if (r.status === 401) { signedOut(); return null; }
+        if (!r.ok) return describe(r);
+        return r.json();
+      })
+      .then(function(d){
+        if (!d) return;
+        if (!d.url) throw new Error("No billing link was returned.");
+        location.href = d.url;
+      })
+      .catch(function(e){
+        fail("Billing couldn't be opened (" + (e.message || "network error") + ").");
+        b.disabled = false;
+      });
+  });
 
   document.getElementById("acct-key-copy").addEventListener("click", function(){
     var b = this;
