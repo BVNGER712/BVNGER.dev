@@ -222,6 +222,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
   <section id="plans">
     <p class="notice ok" id="notice-success" role="status">Payment received. Your license key is on its way to your email. Check spam if it hasn't arrived in a few minutes.</p>
     <p class="notice warn" id="notice-cancel" role="status">Checkout was canceled. You haven't been charged.</p>
+    <p class="notice warn" id="notice-staging" role="status">Staging test mode. Checkout uses Stripe's sandbox, so no real money moves. Pay with test card 4242 4242 4242 4242, any future date and any CVC.</p>
     <p class="notice warn" id="notice-error" role="alert">Checkout couldn't be started. Please try again, or ask for help in the Discord server.</p>
 
     <div class="plans">
@@ -326,11 +327,17 @@ footer .legal a:hover{color:var(--cyan-hi)}
 </div>
 <script>
 (function(){
-  // Set this to the license API's checkout route once it is deployed.
-  // It should accept POST {"plan":"standard"} and return {"url":"https://checkout.stripe.com/..."}.
-  var CHECKOUT_ENDPOINT = "";
+  // The license API's checkout route: POST {"plan":"standard"} returns {"url":"https://checkout.stripe.com/..."}.
+  // Production stays empty until launch. Staging (Stripe test mode) only runs when the page is opened with ?staging=1.
+  var PRODUCTION_ENDPOINT = "";
+  var STAGING_ENDPOINT = "https://api-staging.bvnger.dev/checkout";
 
-  var q = new URLSearchParams(location.search).get("checkout");
+  var params = new URLSearchParams(location.search);
+  var staging = params.get("staging") === "1";
+  var CHECKOUT_ENDPOINT = staging ? STAGING_ENDPOINT : PRODUCTION_ENDPOINT;
+  if (staging) document.getElementById("notice-staging").classList.add("show");
+
+  var q = params.get("checkout");
   if (q === "success") document.getElementById("notice-success").classList.add("show");
   if (q === "cancel") document.getElementById("notice-cancel").classList.add("show");
 
