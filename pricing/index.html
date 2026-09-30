@@ -625,7 +625,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
     api("/account")
       .then(function(r){
         if (r.status === 401) { signedOut(); return null; }
-        if (!r.ok) throw new Error(r.status);
+        if (!r.ok) return describe(r);
         return r.json();
       })
       .then(function(a){
@@ -642,8 +642,8 @@ footer .legal a:hover{color:var(--cyan-hi)}
         }
         render(a);
       })
-      .catch(function(){
-        status.textContent = "Couldn't reach the license service.";
+      .catch(function(e){
+        status.textContent = "Couldn't reach the license service (" + ((e && e.message) || "network error") + ").";
         setButton("Try again", function(){ clearFail(); load(0); });
       });
   }
