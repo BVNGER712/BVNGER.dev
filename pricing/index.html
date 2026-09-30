@@ -444,7 +444,9 @@ footer .legal a:hover{color:var(--cyan-hi)}
     if (a.license) {
       serverWrap.hidden = true;
       status.innerHTML = "<strong>Subscription active.</strong>";
+      var server = guilds.filter(function(g){ return String(g.id) === String(a.selectedGuildId); })[0];
       status.appendChild(document.createTextNode(licenseText(a.license) +
+        (server ? " Server: " + (server.name || "Unnamed") + " (ID " + server.id + ")." : "") +
         " Getting a key creates a new one and replaces any key you had before."));
       document.getElementById("acct-tools").hidden = false;
       if (keyBox.hidden) setButton("Get license key", revealKey);
