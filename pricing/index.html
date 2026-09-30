@@ -475,6 +475,16 @@ footer .legal a:hover{color:var(--cyan-hi)}
       });
   });
 
+  // Turns a failed API response into "HTTP 500: message" so problems can be diagnosed from a screenshot.
+  function describe(r){
+    return r.text().then(function(t){
+      var msg = "";
+      try { var j = JSON.parse(t); msg = j.error || j.message || ""; } catch (e) { msg = t; }
+      if (typeof msg !== "string") msg = JSON.stringify(msg);
+      throw new Error("HTTP " + r.status + (msg ? ": " + msg.slice(0, 200) : ""));
+    });
+  }
+
   function startCheckout(){
     clearFail();
     setButton("Opening checkout…", null);
@@ -482,18 +492,18 @@ footer .legal a:hover{color:var(--cyan-hi)}
       .then(function(r){
         if (r.status === 401) { signedOut(); return null; }
         if (r.status === 409) throw new Error("conflict");
-        if (!r.ok) throw new Error(r.status);
+        if (!r.ok) return describe(r);
         return r.json();
       })
       .then(function(d){
         if (!d) return;
-        if (!d.url) throw new Error("no url");
+        if (!d.url) throw new Error("No checkout link was returned.");
         location.href = d.url;
       })
       .catch(function(e){
         fail(e.message === "conflict"
           ? "That server already has a subscription, or no server is selected."
-          : "Checkout couldn't be started. Please try again, or ask for help in the Discord server.");
+          : "Checkout couldn't be started (" + (e.message || "network error") + "). Please try again, or ask for help in the Discord server.");
         setButton("Start free trial", startCheckout);
       });
   }
