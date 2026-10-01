@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bastion Patch Notes · BVNGER.dev</title>
+<meta name="description" content="What's new in each Bastion release.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="BVNGER.dev">
+<meta property="og:title" content="Bastion Patch Notes · BVNGER.dev">
+<meta property="og:description" content="What's new in each Bastion release.">
+<meta property="og:url" content="https://bvnger.dev/patch-notes/">
+<meta property="og:image" content="https://bvnger.dev/bvnger-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" href="/bastion/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Same tokens and components as the home, pricing and download pages. */
+:root{
+  --bg:#0b1020;
+  --glow-violet:#29204b;
+  --glow-cyan:#0e3644;
+  --panel:#101625;
+  --card-a:#1d1e39;
+  --card-b:#131729;
+  --line:#2a3552;
+  --line-soft:#343755;
+  --line-card:#3b3d5d;
+  --fg:#d5d7e8;
+  --fg-strong:#f4f1ff;
+  --muted:#aab3c8;
+  --dim:#8993aa;
+  --cyan:#29c9d2;
+  --cyan-hi:#7fe8f0;
+  --indigo:#5968d7;
+  --violet:#a14ad6;
+  --link:#bdb2ff;
+  --amber:#f5b957;
+  --teal:#39dccf;
+  --ink:#06222b;
+  --brand-gradient:linear-gradient(90deg,#29c9d2 0%,#5968d7 52%,#a14ad6 100%);
+  --font-display:"Barlow Semi Condensed","Bahnschrift","Arial Narrow",sans-serif;
+  --font-body:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Cascadia Mono,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scrollbar-color:#5968d7 #0a0f1c}
+body{
+  margin:0;min-height:100vh;
+  background:
+    radial-gradient(ellipse at 12% -8%,var(--glow-violet) 0,transparent 36%),
+    radial-gradient(ellipse at 96% 2%,var(--glow-cyan) 0,transparent 30%),
+    var(--bg);
+  background-color:var(--bg);
+  color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;
+  padding-inline:20px;padding-block:0 48px;
+}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:#0a0f1c;border:1px solid #25304a;border-radius:6px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#29c9d2,#5968d7 52%,#a14ad6);border:1px solid #536b9c;border-radius:6px}
+::selection{background:#5968d7;color:#fff}
+.wrap{max-width:1040px;margin-inline:auto}
+a{color:var(--link)}
+a:hover{color:#e2dcff}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+
+header.top{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  padding-block:20px;border-bottom:1px solid var(--line-soft);
+}
+.brand-mini{font-family:var(--font-display);font-weight:800;letter-spacing:.16em;color:var(--fg-strong);text-decoration:none;font-size:15px}
+header.top nav{display:flex;gap:6px;flex-wrap:wrap}
+header.top nav a{
+  border:1px solid #3c405d;border-radius:8px;padding:8px 13px;text-decoration:none;
+  font-size:13px;color:#dedcf1;
+}
+header.top nav a:hover{background:#292744;color:#fff}
+
+.hero{padding-block:56px 44px;border-bottom:1px solid var(--line-soft)}
+.eyebrow{
+  font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.22em;
+  color:#ba9bff;margin:0 0 14px;text-transform:uppercase;
+}
+.title{display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap}
+.emblem{width:72px;height:72px;object-fit:contain;flex:none;filter:drop-shadow(0 0 18px #5968d799)}
+h1{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(44px,7vw,84px);line-height:.9;letter-spacing:.03em;margin:0;color:var(--fg-strong);
+}
+.rule{height:3px;width:min(320px,60%);background:var(--brand-gradient);border-radius:2px;margin:26px 0 0}
+.lede{max-width:58ch;margin:22px 0 0;font-size:19px;color:var(--fg)}
+.lede span{color:var(--muted)}
+
+/* Release timeline: a rail down the left, one card per version, newest first. */
+.releases{list-style:none;margin:0;padding:48px 0;display:grid;gap:22px;border-bottom:1px solid var(--line-soft)}
+.release{position:relative;display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px 28px}
+.release-meta{padding-top:24px;display:grid;gap:8px;align-content:start;justify-items:start}
+.version{
+  font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1;letter-spacing:.04em;
+  color:var(--fg-strong);
+}
+.date{font-family:var(--font-mono);font-size:12.5px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.tag{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 10px;border:1px solid currentColor;border-radius:999px;white-space:nowrap;
+}
+.tag.latest{color:var(--teal);background:#39dccf14}
+.notes{
+  padding:24px 26px;border:1px solid var(--line-card);border-radius:17px;
+  background:linear-gradient(150deg,var(--card-a),var(--card-b));min-width:0;
+}
+.release.current .notes{border-color:#5968d7;box-shadow:0 0 50px #5968d71f}
+.notes h2{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+  font-size:24px;line-height:1.1;margin:0 0 6px;color:var(--fg-strong);text-wrap:balance;
+}
+.summary{margin:0 0 18px;color:var(--muted);font-size:15.5px;max-width:62ch}
+.group + .group{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.group h3{
+  font-family:var(--font-mono);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  margin:0 0 10px;color:#ba9bff;
+}
+.group.new h3{color:var(--cyan-hi)}
+.group.fixed h3{color:var(--amber)}
+.changes{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.changes li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:10px;color:#cbd0de;font-size:15px;line-height:1.55}
+.changes li::before{content:"";width:6px;height:6px;margin-top:9px;margin-left:4px;border-radius:2px;background:var(--brand-gradient)}
+.changes strong{color:var(--fg-strong);font-weight:600}
+
+.cta{padding-block:40px;display:flex;justify-content:space-between;align-items:center;gap:18px 32px;flex-wrap:wrap;border-bottom:1px solid var(--line-soft)}
+.cta p{margin:0;color:var(--muted);max-width:56ch}
+.links{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;justify-content:center;align-items:center;
+  font-family:var(--font-mono);font-size:14px;text-decoration:none;color:#dedcf1;
+  padding:13px 20px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;white-space:nowrap;
+}
+.btn:hover{background:#292744;border-color:var(--cyan);color:#fff}
+.btn.primary{background:var(--cyan);color:var(--ink);border-color:var(--cyan);font-weight:500}
+.btn.primary:hover{background:var(--cyan-hi);border-color:var(--cyan-hi);color:var(--ink)}
+
+footer{
+  padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--dim);
+  display:flex;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;
+}
+footer .legal a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+footer .legal a:hover{color:var(--cyan-hi)}
+
+@media (max-width:760px){
+  .hero{padding-block:38px 34px}
+  .emblem{width:56px;height:56px}
+  .releases{padding-block:36px}
+  .release{grid-template-columns:minmax(0,1fr);gap:12px}
+  .release-meta{padding-top:0;grid-auto-flow:column;align-items:center;justify-content:start;gap:12px}
+  .version{font-size:28px}
+  .notes{padding:20px 18px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn,header.top nav a{transition:border-color .15s,background-color .15s}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand-mini" href="/">BVNGER</a>
+    <nav aria-label="Site">
+      <a href="/#projects">Projects</a>
+      <a href="/pricing/">Pricing</a>
+      <a href="/download/">Download</a>
+      <a href="/#community">Community</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <p class="eyebrow">Bastion Server Control Panel</p>
+    <div class="title">
+      <img class="emblem" src="/bastion/bastion.png" width="72" height="72" alt="Bastion emblem">
+      <h1>Patch Notes</h1>
+    </div>
+    <div class="rule" aria-hidden="true"></div>
+    <p class="lede">What's new in each release. <span>Bastion updates itself, so you get these automatically. Check your version in Settings, under Check for updates.</span></p>
+  </div>
+
+  <!-- Newest release first. Mark the newest with class "current" and the Latest tag. -->
+  <ol class="releases" reversed>
+    <li class="release current" id="v1.0.0">
+      <div class="release-meta">
+        <span class="version">1.0.0</span>
+        <span class="date">October 1, 2026</span>
+        <span class="tag latest">Latest</span>
+      </div>
+      <article class="notes">
+        <h2>First release</h2>
+        <p class="summary">Bastion Standard is available to everyone, with a 7-day free trial.</p>
+        <div class="group new">
+          <h3>Included</h3>
+          <ul class="changes">
+            <li><span><strong>Windows control panel</strong> with a guided Setup Assistant and connection checks.</span></li>
+            <li><span><strong>Support tickets</strong> with claim, close, reopen and protected transcripts.</span></li>
+            <li><span><strong>Moderation:</strong> member reports, word filter, warnings, timeouts, kicks and bans, with history.</span></li>
+            <li><span><strong>Announcements</strong> with a live preview, images, role targeting and link buttons.</span></li>
+            <li><span><strong>Onboarding:</strong> automatic member roles and custom welcome messages.</span></li>
+            <li><span><strong>Server management:</strong> channels, permission presets and guarded cleanup.</span></li>
+            <li><span><strong>Health checks</strong> and desktop alerts.</span></li>
+            <li><span><strong>Backups:</strong> settings backups and server structure snapshots.</span></li>
+            <li><span><strong>Automatic updates</strong>, checked against a published hash before they install.</span></li>
+          </ul>
+        </div>
+      </article>
+    </li>
+  </ol>
+
+  <div class="cta">
+    <p>Found a bug or have an idea for the next update? Tell us in the Discord server.</p>
+    <div class="links">
+      <a class="btn primary" href="/download/">Download Bastion</a>
+      <a class="btn" href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Discord</a>
+    </div>
+  </div>
+
+  <footer>
+    <span>BVNGER.dev</span>
+    <span class="legal">Bastion legal: <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a> · <a href="/eula/">EULA</a> · <a href="/refunds/">Refunds</a></span>
+  </footer>
+</div>
+<script src="/rain.js" defer></script>
+</body>
+</html>
