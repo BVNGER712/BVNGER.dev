@@ -673,7 +673,8 @@ footer .legal a:hover{color:var(--cyan-hi)}
             setTimeout(function(){ load(tries - 1); }, 2000);
           } else {
             status.textContent = "Payment went through, but the subscription isn't confirmed yet. Check again in a minute.";
-            setButton("Check again", function(){ load(5); });
+            // Stop waiting for the new subscription and show whatever the server has now.
+            setButton("Check again", function(){ checkout = null; load(0); });
           }
           return;
         }
