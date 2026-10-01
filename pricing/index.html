@@ -245,6 +245,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
     <p class="notice ok" id="notice-success" role="status">Payment received. Your license key will appear on this page once the subscription is confirmed.</p>
     <p class="notice warn" id="notice-cancel" role="status">Checkout was canceled. You haven't been charged.</p>
     <p class="notice warn" id="notice-staging" role="status">Staging test mode. Checkout uses Stripe's sandbox, so no real money moves. Pay with test card 4242 4242 4242 4242, any future date and any CVC.</p>
+    <p class="notice warn" id="notice-live" role="status">Live preview. Checkout uses real Stripe payments, so your card is charged. Refund the test purchase in Stripe afterwards. Open this page with ?live=0 to leave the preview.</p>
     <p class="notice warn" id="notice-error" role="alert">Checkout couldn't be started. Please try again, or ask for help in the Discord server.</p>
 
     <div class="plans">
@@ -376,21 +377,28 @@ footer .legal a:hover{color:var(--cyan-hi)}
   // License API. Flow: Discord sign-in -> pick an owned server -> Stripe Checkout -> show the license key once.
   // The session is an HttpOnly cookie on the API host, so every call sends credentials.
   // Production stays empty until launch. Staging (Stripe test mode) only runs after the page is opened with ?staging=1.
+  // ?live=1 previews the live API (real charges) before launch, for the owner's own test purchase.
   var PRODUCTION_API = "";
+  var LIVE_PREVIEW_API = "https://api.bvnger.dev";
   var STAGING_API = "https://api-staging.bvnger.dev";
   var STAGING_FLAG = "bastion-staging";
+  var LIVE_FLAG = "bastion-live";
 
   var params = new URLSearchParams(location.search);
-  var staging = false;
+  var staging = false, livePreview = false;
   try {
-    // The API's fixed return URLs drop ?staging=1, so remember it for this tab.
-    if (params.get("staging") === "1") sessionStorage.setItem(STAGING_FLAG, "1");
+    // The API's fixed return URLs drop the query, so remember the mode for this tab. The two modes are exclusive.
+    if (params.get("staging") === "1") { sessionStorage.setItem(STAGING_FLAG, "1"); sessionStorage.removeItem(LIVE_FLAG); }
+    if (params.get("live") === "1") { sessionStorage.setItem(LIVE_FLAG, "1"); sessionStorage.removeItem(STAGING_FLAG); }
     if (params.get("staging") === "0") sessionStorage.removeItem(STAGING_FLAG);
+    if (params.get("live") === "0") sessionStorage.removeItem(LIVE_FLAG);
     staging = sessionStorage.getItem(STAGING_FLAG) === "1";
+    livePreview = !staging && sessionStorage.getItem(LIVE_FLAG) === "1";
   } catch (e) {
     staging = params.get("staging") === "1";
+    livePreview = !staging && params.get("live") === "1";
   }
-  var API = staging ? STAGING_API : PRODUCTION_API;
+  var API = staging ? STAGING_API : (livePreview && !PRODUCTION_API ? LIVE_PREVIEW_API : PRODUCTION_API);
 
   var btn = document.querySelector("button[data-plan]");
   var acct = document.getElementById("acct");
@@ -425,12 +433,13 @@ footer .legal a:hover{color:var(--cyan-hi)}
     return;
   }
 
-  show("notice-staging");
+  if (staging) show("notice-staging");
+  if (livePreview && !PRODUCTION_API) show("notice-live");
   acct.hidden = false;
   btn.addEventListener("click", function(){ if (action) action(); });
 
   function signIn(){
-    try { sessionStorage.setItem(STAGING_FLAG, "1"); } catch (e) {}
+    try { sessionStorage.setItem(staging ? STAGING_FLAG : LIVE_FLAG, "1"); } catch (e) {}
     location.href = API + "/auth/discord/start";
   }
 
