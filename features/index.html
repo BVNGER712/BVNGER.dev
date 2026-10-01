@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bastion Features · BVNGER.dev</title>
+<meta name="description" content="Everything Bastion does: tickets, moderation, announcements, onboarding, server management, health checks, snapshots and more.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="BVNGER.dev">
+<meta property="og:title" content="Bastion Features · BVNGER.dev">
+<meta property="og:description" content="Everything Bastion does, in one Windows control panel and Discord bot.">
+<meta property="og:url" content="https://bvnger.dev/features/">
+<meta property="og:image" content="https://bvnger.dev/bvnger-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" href="/bastion/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Same tokens and components as the home, pricing and download pages. */
+:root{
+  --bg:#0b1020;
+  --glow-violet:#29204b;
+  --glow-cyan:#0e3644;
+  --panel:#101625;
+  --card-a:#1d1e39;
+  --card-b:#131729;
+  --line:#2a3552;
+  --line-soft:#343755;
+  --line-card:#3b3d5d;
+  --fg:#d5d7e8;
+  --fg-strong:#f4f1ff;
+  --muted:#aab3c8;
+  --dim:#8993aa;
+  --cyan:#29c9d2;
+  --cyan-hi:#7fe8f0;
+  --indigo:#5968d7;
+  --violet:#a14ad6;
+  --link:#bdb2ff;
+  --amber:#f5b957;
+  --teal:#39dccf;
+  --ink:#06222b;
+  --brand-gradient:linear-gradient(90deg,#29c9d2 0%,#5968d7 52%,#a14ad6 100%);
+  --font-display:"Barlow Semi Condensed","Bahnschrift","Arial Narrow",sans-serif;
+  --font-body:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Cascadia Mono,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scrollbar-color:#5968d7 #0a0f1c}
+body{
+  margin:0;min-height:100vh;
+  background:
+    radial-gradient(ellipse at 12% -8%,var(--glow-violet) 0,transparent 36%),
+    radial-gradient(ellipse at 96% 2%,var(--glow-cyan) 0,transparent 30%),
+    var(--bg);
+  background-color:var(--bg);
+  color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;
+  padding-inline:20px;padding-block:0 48px;
+}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:#0a0f1c;border:1px solid #25304a;border-radius:6px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#29c9d2,#5968d7 52%,#a14ad6);border:1px solid #536b9c;border-radius:6px}
+::selection{background:#5968d7;color:#fff}
+.wrap{max-width:1040px;margin-inline:auto}
+a{color:var(--link)}
+a:hover{color:#e2dcff}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+code{font-family:var(--font-mono);font-size:.86em;color:var(--cyan-hi);background:#141a2e;border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap}
+
+header.top{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  padding-block:20px;border-bottom:1px solid var(--line-soft);
+}
+.brand-mini{font-family:var(--font-display);font-weight:800;letter-spacing:.16em;color:var(--fg-strong);text-decoration:none;font-size:15px}
+header.top nav{display:flex;gap:6px;flex-wrap:wrap}
+header.top nav a{
+  border:1px solid #3c405d;border-radius:8px;padding:8px 13px;text-decoration:none;
+  font-size:13px;color:#dedcf1;
+}
+header.top nav a:hover{background:#292744;color:#fff}
+
+.hero{padding-block:56px 44px;border-bottom:1px solid var(--line-soft)}
+.eyebrow{
+  font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.22em;
+  color:#ba9bff;margin:0 0 14px;text-transform:uppercase;
+}
+.title{display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap}
+.emblem{width:72px;height:72px;object-fit:contain;flex:none;filter:drop-shadow(0 0 18px #5968d799)}
+h1{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(44px,7vw,84px);line-height:.9;letter-spacing:.03em;margin:0;color:var(--fg-strong);
+}
+.rule{height:3px;width:min(320px,60%);background:var(--brand-gradient);border-radius:2px;margin:26px 0 0}
+.lede{max-width:60ch;margin:22px 0 0;font-size:19px;color:var(--fg)}
+.lede span{color:var(--muted)}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 0;padding:0;list-style:none}
+.jump a{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;
+  color:#dedcf1;border:1px solid #3c405d;border-radius:999px;padding:6px 12px;background:#141a2e;
+}
+.jump a:hover{border-color:var(--cyan);color:#fff}
+
+.features{padding-block:48px;border-bottom:1px solid var(--line-soft);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.group{
+  padding:24px 24px 22px;border:1px solid var(--line-card);border-radius:17px;
+  background:linear-gradient(150deg,var(--card-a),var(--card-b));min-width:0;scroll-margin-top:20px;
+}
+.group h2{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+  font-size:21px;line-height:1.1;margin:0 0 14px;color:var(--fg-strong);
+}
+.group h2::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--brand-gradient);flex:none}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:11px}
+.list li{color:#cbd0de;font-size:15px;line-height:1.5}
+.list strong{display:block;color:var(--fg-strong);font-weight:600;font-size:15px}
+
+.next{padding-block:48px;border-bottom:1px solid var(--line-soft)}
+.next-card{
+  padding:26px 28px;border:1px solid var(--amber);border-radius:17px;background:#f5b9570d;
+  display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:16px 32px;align-items:start;
+}
+.tag{
+  display:inline-block;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 10px;border:1px solid currentColor;border-radius:999px;white-space:nowrap;color:var(--amber);
+}
+.next h2{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+  font-size:30px;line-height:1.05;margin:12px 0 0;color:var(--fg-strong);
+}
+.next .list{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}
+
+.cta{padding-block:40px;display:flex;justify-content:space-between;align-items:center;gap:18px 32px;flex-wrap:wrap;border-bottom:1px solid var(--line-soft)}
+.cta p{margin:0;color:var(--muted);max-width:52ch}
+.cta p strong{color:var(--fg-strong);font-weight:600}
+.links{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;justify-content:center;align-items:center;
+  font-family:var(--font-mono);font-size:14px;text-decoration:none;color:#dedcf1;
+  padding:13px 20px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;white-space:nowrap;
+}
+.btn:hover{background:#292744;border-color:var(--cyan);color:#fff}
+.btn.primary{background:var(--cyan);color:var(--ink);border-color:var(--cyan);font-weight:500}
+.btn.primary:hover{background:var(--cyan-hi);border-color:var(--cyan-hi);color:var(--ink)}
+
+footer{
+  padding-top:24px;font-family:var(--font-mono);font-size:12px;color:var(--dim);
+  display:flex;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;
+}
+footer .legal a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+footer .legal a:hover{color:var(--cyan-hi)}
+
+@media (max-width:760px){
+  .hero{padding-block:38px 34px}
+  .emblem{width:56px;height:56px}
+  .features{grid-template-columns:minmax(0,1fr);padding-block:36px}
+  .group{padding:20px 18px}
+  .next-card{grid-template-columns:minmax(0,1fr);padding:22px 18px}
+  .next .list{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn,.jump a,header.top nav a{transition:border-color .15s,background-color .15s}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand-mini" href="/">BVNGER</a>
+    <nav aria-label="Site">
+      <a href="/#projects">Projects</a>
+      <a href="/pricing/">Pricing</a>
+      <a href="/download/">Download</a>
+      <a href="/#community">Community</a>
+      <a href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <p class="eyebrow">Bastion Server Control Panel</p>
+    <div class="title">
+      <img class="emblem" src="/bastion/bastion.png" width="72" height="72" alt="Bastion emblem">
+      <h1>Features</h1>
+    </div>
+    <div class="rule" aria-hidden="true"></div>
+    <p class="lede">One Windows control panel and Discord bot for running your server. <span>Everything below is included in the Standard plan.</span></p>
+    <ul class="jump" aria-label="Jump to a section">
+      <li><a href="#control-panel">Control panel</a></li>
+      <li><a href="#tickets">Tickets</a></li>
+      <li><a href="#moderation">Moderation</a></li>
+      <li><a href="#announcements">Announcements</a></li>
+      <li><a href="#onboarding">Onboarding</a></li>
+      <li><a href="#server">Server management</a></li>
+      <li><a href="#safety">Safety &amp; records</a></li>
+      <li><a href="#account">Account &amp; updates</a></li>
+    </ul>
+  </div>
+
+  <div class="features">
+    <section class="group" id="control-panel">
+      <h2>Control panel</h2>
+      <ul class="list">
+        <li><strong>Setup Assistant</strong>Connect your bot step by step, with permission and role checks before anything is saved.</li>
+        <li><strong>Dashboard</strong>Bot status, connected server, open tickets, and live CPU and RAM use.</li>
+        <li><strong>Tray mode</strong>Runs quietly in the system tray, can start with Windows, and alerts you to new tickets and reports.</li>
+        <li><strong>Demo Mode</strong>Explore every screen with sample data, no server needed.</li>
+      </ul>
+    </section>
+
+    <section class="group" id="tickets">
+      <h2>Support tickets</h2>
+      <ul class="list">
+        <li><strong>Ticket panel</strong><code>/setup-tickets</code> posts a button panel. Members open private ticket channels.</li>
+        <li><strong>Staff tools</strong>Claim, close, reopen, add a member, and delete with confirmation, from Discord or the control panel.</li>
+        <li><strong>Transcripts</strong>Closed tickets are saved as transcripts in your private ticket log channel.</li>
+      </ul>
+    </section>
+
+    <section class="group" id="moderation">
+      <h2>Moderation</h2>
+      <ul class="list">
+        <li><strong>Member reports</strong><code>/report</code> lets members privately flag someone to your staff.</li>
+        <li><strong>Actions</strong>Warn, time out, remove a time-out, kick and ban from the member directory, with a reason on every action.</li>
+        <li><strong>Word filter</strong>Removes messages with blocked words, catches look-alike spellings, and logs the action without keeping the message.</li>
+        <li><strong>Purge</strong><code>/purge</code> bulk-deletes recent messages after confirmation.</li>
+        <li><strong>Moderation log</strong>Open reports, warnings, auto-mod actions and full history. Resolve, dismiss or archive.</li>
+      </ul>
+    </section>
+
+    <section class="group" id="announcements">
+      <h2>Announcements</h2>
+      <ul class="list">
+        <li><strong>Composer</strong>Title, body, image and a link button, with a live Discord-style preview before posting.</li>
+        <li><strong>Role targeting</strong>Ping a role, or post quietly.</li>
+        <li><strong>From Discord too</strong><code>/announce</code> shows you a private preview, then posts.</li>
+      </ul>
+    </section>
+
+    <section class="group" id="onboarding">
+      <h2>Onboarding</h2>
+      <ul class="list">
+        <li><strong>Auto role</strong>New members get your member role, and Bastion fixes any it missed.</li>
+        <li><strong>Welcome messages</strong>Custom message with the member's name, your server name and your rules channel.</li>
+        <li><strong>Game update roles</strong><code>/setup-updates</code> posts a panel where members choose which update pings they get.</li>
+      </ul>
+    </section>
+
+    <section class="group" id="server">
+      <h2>Server management</h2>
+      <ul class="list">
+        <li><strong>Channels &amp; categories</strong>Create, rename, move and delete, with guards on destructive actions.</li>
+        <li><strong>Permission presets</strong>Public, members-only, staff-only, read-only or hidden in one click.</li>
+        <li><strong>Staff access</strong>Choose which roles can use which Bastion tools.</li>
+      </ul>
+    </section>
+
+    <section class="group" id="safety">
+      <h2>Safety &amp; records</h2>
+      <ul class="list">
+        <li><strong>Health checks</strong>Permissions, intents, roles and channels, each with a recommended fix.</li>
+        <li><strong>Audit log</strong>Every staff and bot action, filterable and exportable.</li>
+        <li><strong>Structure snapshots</strong>Automatic copies of your channels, roles and permissions, compared against the live server.</li>
+        <li><strong>Settings backups</strong>Back up and restore Bastion's own settings.</li>
+      </ul>
+    </section>
+
+    <section class="group" id="account">
+      <h2>Account &amp; updates</h2>
+      <ul class="list">
+        <li><strong>One simple license</strong>One server and one PC per subscription. If a payment fails you get 7 days, then read-only mode. Your data is never deleted.</li>
+        <li><strong>Automatic updates</strong>Downloaded and checked before they install, and your settings stay put.</li>
+        <li><strong>Status check</strong><code>/status</code> shows how the bot is doing, right from Discord.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="next" aria-labelledby="next-title">
+    <div class="next-card">
+      <div>
+        <span class="tag">Coming in 1.1.0</span>
+        <h2 id="next-title">Next update</h2>
+      </div>
+      <ul class="list">
+        <li><strong>Emoji picker</strong>Your server's emojis in announcements, welcome messages and channel names.</li>
+        <li><strong>Richer announcements</strong>A second link button, and your bot's avatar by default.</li>
+        <li><strong>License Agreement in setup</strong>Review the EULA and Terms inside the Setup Assistant.</li>
+        <li><strong>Patch notes in the app</strong>See what's new right from Settings. Also on the <a href="/patch-notes/">patch notes page</a>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="cta">
+    <p><strong>$4.99/month</strong> plus tax where applicable, with a 7-day free trial. Cancel anytime.</p>
+    <div class="links">
+      <a class="btn primary" href="/pricing/">Start free trial</a>
+      <a class="btn" href="/download/">Download</a>
+    </div>
+  </div>
+
+  <footer>
+    <span>BVNGER.dev</span>
+    <span class="legal">Bastion legal: <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a> · <a href="/eula/">EULA</a> · <a href="/refunds/">Refunds</a></span>
+  </footer>
+</div>
+<script src="/rain.js" defer></script>
+</body>
+</html>

@@ -157,6 +157,8 @@ h2{
 .btn[disabled],.btn[aria-disabled="true"]{background:#141a2e;border-color:#3c405d;color:var(--dim);cursor:not-allowed}
 .plan .btn{width:100%}
 .fine{margin:0;font-size:13px;color:var(--dim);text-align:center}
+.all-features{margin:0;font-family:var(--font-mono);font-size:13px}
+.all-features a{color:var(--cyan-hi);text-decoration:underline;text-underline-offset:3px}
 .acct{display:grid;gap:12px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
 .acct[hidden],.acct [hidden]{display:none}
 .acct-line{margin:0;font-size:14px;color:var(--muted)}
@@ -270,6 +272,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
           <li><span><strong>Backups</strong>: settings backups and server structure snapshots</span></li>
           <li><span>Automatic updates</span></li>
         </ul>
+        <p class="all-features"><a href="/features/">See every feature</a></p>
         <div class="acct" id="acct" hidden>
           <p class="acct-line" id="acct-status"></p>
           <label class="acct-field" id="acct-server-wrap" hidden>
