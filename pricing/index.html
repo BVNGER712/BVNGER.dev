@@ -287,7 +287,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
           <p class="acct-line acct-done" id="acct-done" role="status" hidden></p>
         </div>
         <button type="button" class="btn primary" data-plan="standard">Start free trial</button>
-        <p class="fine">Billed monthly after the trial. Cancel anytime.</p>
+        <p class="fine" id="plan-fine">Billed monthly after the trial. Cancel anytime.</p>
       </article>
 
       <article class="plan" aria-labelledby="hosted-name">
@@ -484,6 +484,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
     serverWrap.hidden = false;
 
     var l = a.license;
+    document.getElementById("plan-fine").textContent = "Billed monthly after the trial. Cancel anytime.";
     if (l && usable(l)) {
       status.innerHTML = l.mode === "grace"
         ? "<strong>Payment needs attention.</strong>"
@@ -508,6 +509,8 @@ footer .legal a:hover{color:var(--cyan-hi)}
       tools.hidden = true;
       status.innerHTML = "<strong>Your subscription for this server has ended.</strong>";
       status.appendChild(document.createTextNode(" Subscribe again to get a new license key. Server ID " + selected + "."));
+      // A server gets one free trial, so a returning subscription is billed from today.
+      document.getElementById("plan-fine").textContent = "Billed monthly, starting today. Cancel anytime.";
       setButton("Subscribe again", startCheckout);
       return;
     }
