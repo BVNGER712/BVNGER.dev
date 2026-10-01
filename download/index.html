@@ -340,9 +340,9 @@ footer .legal a:hover{color:var(--cyan-hi)}
 (function(){
   // Fill these in when the production release is published. While url is empty, the download button stays disabled.
   var RELEASE = {
-    url: "",        // e.g. the Velopack Setup.exe link on Cloudflare R2
-    version: "",    // e.g. "1.0.0"
-    signed: false   // set true once the installer is code-signed
+    url: "https://downloads.bvnger.dev/production/BVNGER.Bastion-production-Setup.exe",
+    version: "1.0.0",
+    signed: true    // Authenticode-signed by William Kurtz
   };
   if (!RELEASE.url) return;
 
@@ -355,7 +355,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
   tag.textContent = "Available";
   tag.className = "tag live";
   document.getElementById("release-note").innerHTML =
-    'Download the installer below. You\'ll need a license key from the <a href="/pricing/">pricing page</a> during setup.';
+    'Download the installer below. After setup, enter your license key from the <a href="/pricing/">pricing page</a> in Bastion\'s License panel.';
 
   if (RELEASE.version) {
     var v = document.getElementById("release-version");

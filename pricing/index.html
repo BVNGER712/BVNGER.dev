@@ -238,7 +238,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
     </div>
     <div class="rule" aria-hidden="true"></div>
     <p class="lede">One app instead of a stack of bot subscriptions. <span>Tickets, moderation, onboarding, announcements and backups, run from a Windows control panel.</span></p>
-    <p class="launch"><span class="tag soon">Launching soon</span> <span>Checkout opens once licensing is live. <a href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Join the Discord</a> to hear first.</span></p>
+    <p class="launch"><span class="tag live">Available now</span> <span>Start with a 7-day free trial. Questions? <a href="https://discord.gg/XdTjEkVxTQ" target="_blank" rel="noopener">Join the Discord</a>.</span></p>
   </div>
 
   <section id="plans">
@@ -255,7 +255,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
             <h3 id="standard-name">Standard</h3>
             <p class="for">Runs on your own Windows PC or server.</p>
           </div>
-          <span class="tag live">At launch</span>
+          <span class="tag live">Available</span>
         </div>
         <p class="price"><b>$4.99</b><span>/ month + tax where applicable</span></p>
         <p class="trial">7-day free trial</p>
@@ -376,9 +376,9 @@ footer .legal a:hover{color:var(--cyan-hi)}
 (function(){
   // License API. Flow: Discord sign-in -> pick an owned server -> Stripe Checkout -> show the license key once.
   // The session is an HttpOnly cookie on the API host, so every call sends credentials.
-  // Production stays empty until launch. Staging (Stripe test mode) only runs after the page is opened with ?staging=1.
-  // ?live=1 previews the live API (real charges) before launch, for the owner's own test purchase.
-  var PRODUCTION_API = "";
+  // Production is live. Staging (Stripe test mode) only runs after the page is opened with ?staging=1.
+  // ?live=1 only mattered before launch, while PRODUCTION_API was empty.
+  var PRODUCTION_API = "https://api.bvnger.dev";
   var LIVE_PREVIEW_API = "https://api.bvnger.dev";
   var STAGING_API = "https://api-staging.bvnger.dev";
   var STAGING_FLAG = "bastion-staging";
@@ -538,13 +538,14 @@ footer .legal a:hover{color:var(--cyan-hi)}
       });
   });
 
-  // Turns a failed API response into "HTTP 500: message" so problems can be diagnosed from a screenshot.
+  // Turns a failed API response into the API's own plain-language message, falling back to the status code.
   function describe(r){
     return r.text().then(function(t){
       var msg = "";
-      try { var j = JSON.parse(t); msg = j.error || j.message || ""; } catch (e) { msg = t; }
-      if (typeof msg !== "string") msg = JSON.stringify(msg);
-      throw new Error("HTTP " + r.status + (msg ? ": " + msg.slice(0, 200) : ""));
+      try { var j = JSON.parse(t); msg = j.error || j.message || ""; } catch (e) { msg = ""; }
+      if (typeof msg !== "string") msg = "";
+      msg = msg.replace(/\.$/, "").slice(0, 200);
+      throw new Error(msg || ("error " + r.status));
     });
   }
 
