@@ -441,6 +441,9 @@ footer .legal a:hover{color:var(--cyan-hi)}
     setButton("Sign in with Discord", signIn);
   }
 
+  // The API reports mode "full" or "grace" while the license can be used.
+  function usable(l){ return l.mode === "full" || l.mode === "grace"; }
+
   function licenseText(l){
     var parts = [];
     if (typeof l.plan === "string") parts.push("Plan: " + l.plan);
@@ -471,12 +474,32 @@ footer .legal a:hover{color:var(--cyan-hi)}
     serverSelect.value = selected;
     serverWrap.hidden = false;
 
-    if (a.license) {
-      status.innerHTML = "<strong>Subscription active.</strong>";
-      status.appendChild(document.createTextNode(licenseText(a.license) +
+    var l = a.license;
+    if (l && usable(l)) {
+      status.innerHTML = l.mode === "grace"
+        ? "<strong>Payment needs attention.</strong>"
+        : "<strong>Subscription active.</strong>";
+      status.appendChild(document.createTextNode(licenseText(l) +
+        (l.mode === "grace" ? " Update your payment with Manage billing before Bastion becomes read-only." : "") +
         " Server ID " + selected + ". Getting a key creates a new one and replaces any key you had before."));
       tools.hidden = false;
       if (keyBox.hidden) setButton("Get license key", revealKey);
+      return;
+    }
+    if (l && l.status !== "canceled" && l.status !== "incomplete_expired") {
+      // Unpaid past the grace period: the subscription still exists, so fix payment instead of buying again.
+      status.innerHTML = "<strong>Payment needs attention.</strong>";
+      status.appendChild(document.createTextNode(licenseText(l) +
+        " Bastion is read-only on this server until the payment is updated."));
+      tools.hidden = false;
+      setButton("Update payment", openBilling);
+      return;
+    }
+    if (l) {
+      tools.hidden = true;
+      status.innerHTML = "<strong>Your subscription for this server has ended.</strong>";
+      status.appendChild(document.createTextNode(" Subscribe again to get a new license key. Server ID " + selected + "."));
+      setButton("Subscribe again", startCheckout);
       return;
     }
     tools.hidden = true;
@@ -542,7 +565,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
     api("/license/key", {})
       .then(function(r){
         if (r.status === 401) { signedOut(); return null; }
-        if (!r.ok) throw new Error(r.status);
+        if (!r.ok) return describe(r);
         return r.json();
       })
       .then(function(d){
@@ -553,8 +576,8 @@ footer .legal a:hover{color:var(--cyan-hi)}
         keyBox.hidden = false;
         btn.hidden = true;
       })
-      .catch(function(){
-        fail("The license key couldn't be created. Please try again, or ask for help in the Discord server.");
+      .catch(function(e){
+        fail("The license key couldn't be created (" + (e.message || "network error") + "). Please try again, or ask for help in the Discord server.");
         setButton("Get license key", revealKey);
       });
   }
@@ -583,8 +606,9 @@ footer .legal a:hover{color:var(--cyan-hi)}
   });
 
   // Opens Stripe's billing portal to cancel, change the card, or see invoices.
-  document.getElementById("acct-billing").addEventListener("click", function(){
-    var b = this;
+  document.getElementById("acct-billing").addEventListener("click", openBilling);
+  function openBilling(){
+    var b = document.getElementById("acct-billing");
     clearFail();
     b.disabled = true;
     api("/billing/portal", {})
@@ -602,7 +626,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
         fail("Billing couldn't be opened (" + (e.message || "network error") + ").");
         b.disabled = false;
       });
-  });
+  }
 
   document.getElementById("acct-key-copy").addEventListener("click", function(){
     var b = this;
@@ -630,7 +654,8 @@ footer .legal a:hover{color:var(--cyan-hi)}
       })
       .then(function(a){
         if (!a) return;
-        if (checkout === "success" && !a.license) {
+        // A server can still carry an older, ended subscription, so wait for one that can be used.
+        if (checkout === "success" && !(a.license && usable(a.license))) {
           if (tries > 0) {
             status.textContent = "Confirming your subscription…";
             setTimeout(function(){ load(tries - 1); }, 2000);
