@@ -148,6 +148,32 @@ a.tag{text-decoration:none}
 a.tag.dev:hover{background:#f5b95729;color:var(--amber)}
 a.tag.test:hover{background:#39dccf29;color:var(--teal)}
 
+/* PUSH row: the game's own blues and gold for a little arcade energy. */
+.push-row{
+  background:radial-gradient(120% 140% at 0% 0%,#1688d42b 0%,transparent 55%),
+    radial-gradient(90% 120% at 100% 100%,#ffd45f1c 0%,transparent 60%),
+    linear-gradient(150deg,var(--card-a),var(--card-b));
+}
+.push-logo{margin:0}
+.push-logo img{display:block;width:100%;max-width:240px;height:auto;filter:drop-shadow(0 6px 18px #24a2ee66)}
+.push-hook{
+  font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+  font-size:21px;line-height:1.15;color:#7fdbff !important;
+}
+.push-chips{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.push-chips li{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.03em;color:#dff4ff;
+  padding:5px 11px;border:1px solid #24a2ee66;border-radius:999px;background:#1688d41f;
+}
+.push-ver{color:#ffd45f;font-family:var(--font-mono);font-size:12.5px;white-space:nowrap}
+a.tag.push-play{color:#0b1629;background:#ffd45f;border-color:#ffd45f;font-weight:600}
+a.tag.push-play:hover{background:#ffe48f;border-color:#ffe48f;color:#0b1629}
+.push-row:hover{border-color:#24a2ee}
+@media (prefers-reduced-motion:no-preference){
+  .push-logo img{transition:transform .25s}
+  .push-row:hover .push-logo img{transform:rotate(-2deg) scale(1.04)}
+}
+
 .join{
   display:flex;justify-content:space-between;align-items:center;gap:24px 40px;flex-wrap:wrap;
   padding:30px 32px;border:1px solid var(--line-card);border-radius:17px;
@@ -353,16 +379,24 @@ footer .legal a:hover{color:var(--cyan-hi)}
           <button type="button" class="gallery-close">Hide screenshots</button>
         </details>
       </li>
-      <li class="row">
+      <li class="row push-row">
         <div>
-          <h3>PUSH</h3>
-          <div class="stack">Godot · Android</div>
+          <h3 class="push-logo"><img src="/media/push-logo.webp" width="1983" height="793" loading="lazy" decoding="async" alt="PUSH"></h3>
+          <div class="stack">Godot 4.7 · Web · Phone + PC</div>
         </div>
         <div>
-          <p>A crowd-pushing action game for mobile. Shove the pack, hold your ground, survive the crush.</p>
-          <p class="sub">Feedback from testers goes to a Cloudflare Workers and D1 backend, so every build gets real notes.</p>
+          <p class="push-hook">Grab the bar. Clear the crowd. Own the platform.</p>
+          <p class="pitch">A chaotic crowd-pushing arcade game. Drag to move, slam <strong>PUSH</strong> for a power hit, and shove a whole mob of stick figures off the edge before they shove you. Every round is a brand-new map.</p>
+          <ul class="push-chips" aria-label="PUSH features">
+            <li>⚡ Power-ups</li>
+            <li>🎵 Original soundtrack</li>
+            <li>🦵 Floppy new rigs</li>
+            <li>🪙 Coins &amp; upgrades</li>
+            <li>🗺️ New map every round</li>
+          </ul>
+          <p class="sub">Plays right in your browser, no download. Tester feedback lands in a Cloudflare Workers and D1 backend, so every build gets real notes. <span class="push-ver">Latest: v0.16</span></p>
         </div>
-        <span class="tag test">In testing</span>
+        <a class="tag push-play" href="https://pushv9.pages.dev" target="_blank" rel="noopener">Play now ▸</a>
       </li>
       <li class="row">
         <div>
