@@ -249,6 +249,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
     <p class="notice warn" id="notice-staging" role="status">Staging test mode. Checkout uses Stripe's sandbox, so no real money moves. Pay with test card 4242 4242 4242 4242, any future date and any CVC.</p>
     <p class="notice warn" id="notice-live" role="status">Live preview. Checkout uses real Stripe payments, so your card is charged. Refund the test purchase in Stripe afterwards. Open this page with ?live=0 to leave the preview.</p>
     <p class="notice warn" id="notice-error" role="alert">Checkout couldn't be started. Please try again, or ask for help in the Discord server.</p>
+    <p class="notice warn" id="notice-paused" role="status">Sign-ups are paused while Bastion is being reworked.</p>
 
     <div class="plans">
       <article class="plan featured" aria-labelledby="standard-name">
@@ -384,6 +385,8 @@ footer .legal a:hover{color:var(--cyan-hi)}
   var PRODUCTION_API = "https://api.bvnger.dev";
   var LIVE_PREVIEW_API = "https://api.bvnger.dev";
   var STAGING_API = "https://api-staging.bvnger.dev";
+  // Bastion is being reworked and has no subscribers, so new sign-ups are switched off. Set to false to turn them back on.
+  var SIGNUPS_PAUSED = true;
   var STAGING_FLAG = "bastion-staging";
   var LIVE_FLAG = "bastion-live";
 
@@ -433,6 +436,11 @@ footer .legal a:hover{color:var(--cyan-hi)}
 
   if (!API) {
     setButton("Checkout opens at launch", null);
+    return;
+  }
+  if (SIGNUPS_PAUSED && !staging) {
+    show("notice-paused");
+    setButton("Sign-ups are paused", null);
     return;
   }
 
