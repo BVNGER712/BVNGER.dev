@@ -31,7 +31,8 @@
   function ease(k){ return k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; }
 
   var W = 0, H = 0, DPR = 1, N = 0, R = 0;
-  var px, py, pz, fx, fy, fz, delay, phase, size, byColor;
+  var px, py, pz, fx, fy, fz, delay, phase, drift, size, byColor;
+  var FLOAT = 0;                                     // how far orbs drift around their spot in a word (px)
   var ballX, ballY, ballZ, shapes, seg, clock = 0;
   var GLOW = 4.5;                                    // glow width compared to the orb
   var orbs = [], glows = [];
@@ -66,12 +67,13 @@
     W = Math.max(1, Math.round(box.width)); H = Math.max(1, Math.round(box.height));
     DPR = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
-    N = W < 560 ? 1400 : 2600;
+    N = W < 560 ? 2800 : 5200;
     R = Math.min(H * 0.42, W * 0.22);
     seed = 7;
     px = new Float32Array(N); py = new Float32Array(N); pz = new Float32Array(N);
     fx = new Float32Array(N); fy = new Float32Array(N); fz = new Float32Array(N);
-    delay = new Float32Array(N); phase = new Float32Array(N); size = new Float32Array(N);
+    delay = new Float32Array(N); phase = new Float32Array(N); drift = new Float32Array(N); size = new Float32Array(N);
+    FLOAT = reduce ? 0 : (W < 560 ? 1.2 : 1.8);
     ballX = new Float32Array(N); ballY = new Float32Array(N); ballZ = new Float32Array(N);
     byColor = [[], [], []];
     var golden = Math.PI * (3 - Math.sqrt(5));
@@ -79,7 +81,7 @@
       // Even spread of points over a sphere (Fibonacci sphere).
       var y = 1 - (i + 0.5) / N * 2, r = Math.sqrt(1 - y * y), a = i * golden;
       ballX[i] = Math.cos(a) * r; ballY[i] = y; ballZ[i] = Math.sin(a) * r;
-      delay[i] = rnd(); phase[i] = rnd() * Math.PI * 2; size[i] = (1.0 + rnd() * 0.6) * (W < 560 ? 0.8 : 1);
+      delay[i] = rnd(); phase[i] = rnd() * Math.PI * 2; drift[i] = 0.5 + rnd() * 0.6; size[i] = (0.7 + rnd() * 0.4) * (W < 560 ? 0.8 : 1);
       byColor[Math.floor(rnd() * 3)].push(i);
       // Start scattered over the whole strip, then fly in to BVNGER.
       px[i] = (rnd() - 0.5) * W; py[i] = (rnd() - 0.5) * H; pz[i] = 0;
@@ -141,9 +143,12 @@
     for (var i = 0; i < N; i++) {
       var tx, ty, tz;
       if (seg.pts) {
-        tx = seg.pts.x[i] + Math.sin(clock * 2 + phase[i]) * 0.5;
-        ty = seg.pts.y[i] + Math.cos(clock * 1.7 + phase[i]) * 0.5;
-        tz = 0;
+        // Each orb drifts slowly around its spot on two mixed waves, at its own speed, and bobs a little
+        // toward and away from the viewer, so the word keeps floating instead of sitting still.
+        var sp = drift[i], ph = phase[i];
+        tx = seg.pts.x[i] + (Math.sin(clock * sp + ph) + 0.5 * Math.sin(clock * sp * 1.7 + ph * 2)) * FLOAT;
+        ty = seg.pts.y[i] + (Math.cos(clock * sp * 0.9 + ph) + 0.5 * Math.cos(clock * sp * 1.4 + ph * 3)) * FLOAT;
+        tz = Math.sin(clock * sp * 0.8 + ph) * FLOAT * 4;
       } else {
         // Spin the sphere around its upright axis, tilted a little toward the viewer.
         var bx = ballX[i] * cs + ballZ[i] * sn, bz = -ballX[i] * sn + ballZ[i] * cs, by = ballY[i];
