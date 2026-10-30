@@ -125,38 +125,51 @@
     return (shapes[word] = {x: sx, y: sy});
   }
 
-  // Start moving every dot from where it is now to a new shape ('ball' or a word).
+  // Start moving every dot to a new shape ('ball' or a word). If the old shape had finished forming, the dots
+  // leave it while it keeps moving (the ball keeps spinning, a word keeps floating). Only a shape cut off
+  // mid-change starts from a frozen copy of where the dots are.
   function begin(shape, hold, typed){
+    var live = !!seg && clock - seg.start >= MORPH;
     for (var i = 0; i < N; i++) { fx[i] = px[i]; fy[i] = py[i]; fz[i] = pz[i]; }
-    seg = {shape: shape, hold: hold, typed: typed, start: clock, pts: shape === 'ball' ? null : wordShape(shape)};
+    seg = {shape: shape, hold: hold, typed: typed, start: clock, pts: shape === 'ball' ? null : wordShape(shape),
+           live: live, fromPts: live ? seg.pts : null};
   }
 
+  // The loop: BVNGER -> ball -> BVNGER. A visitor's word also goes back into the ball, then on to BVNGER.
+  // With reduced motion there is no spinning ball, so a visitor's word goes straight back to BVNGER.
   function next(){
-    if (seg.shape === 'ball' || seg.typed) begin(HOME, HOLD_HOME, false);
+    if (seg.shape === 'ball' || (seg.typed && reduce)) begin(HOME, HOLD_HOME, false);
     else begin('ball', HOLD_BALL, false);
+  }
+
+  // Where dot i sits right now in a shape: a word (pts) or the spinning ball (pts null). Result in sx, sy, sz.
+  var sx = 0, sy = 0, sz = 0, cs = 1, sn = 0, tc = Math.cos(0.35), ts = Math.sin(0.35);
+  function shapeAt(pts, i){
+    if (pts) {
+      // Each orb drifts slowly around its spot on two mixed waves, at its own speed, and bobs a little
+      // toward and away from the viewer, so the word keeps floating instead of sitting still.
+      var sp = drift[i], ph = phase[i];
+      sx = pts.x[i] + (Math.sin(clock * sp + ph) + 0.5 * Math.sin(clock * sp * 1.7 + ph * 2)) * FLOAT;
+      sy = pts.y[i] + (Math.cos(clock * sp * 0.9 + ph) + 0.5 * Math.cos(clock * sp * 1.4 + ph * 3)) * FLOAT;
+      sz = Math.sin(clock * sp * 0.8 + ph) * FLOAT * 4;
+    } else {
+      // Spin the sphere around its upright axis, tilted a little toward the viewer.
+      var bx = ballX[i] * cs + ballZ[i] * sn, bz = -ballX[i] * sn + ballZ[i] * cs, by = ballY[i];
+      sx = bx * R; sy = (by * tc - bz * ts) * R; sz = (by * ts + bz * tc) * R;
+    }
   }
 
   function step(dt){
     clock += dt;
-    var e = clock - seg.start;
-    var spin = clock * 0.45, cs = Math.cos(spin), sn = Math.sin(spin), tc = Math.cos(0.35), ts = Math.sin(0.35);
+    var e = clock - seg.start, spin = clock * 0.45;
+    cs = Math.cos(spin); sn = Math.sin(spin);
     for (var i = 0; i < N; i++) {
-      var tx, ty, tz;
-      if (seg.pts) {
-        // Each orb drifts slowly around its spot on two mixed waves, at its own speed, and bobs a little
-        // toward and away from the viewer, so the word keeps floating instead of sitting still.
-        var sp = drift[i], ph = phase[i];
-        tx = seg.pts.x[i] + (Math.sin(clock * sp + ph) + 0.5 * Math.sin(clock * sp * 1.7 + ph * 2)) * FLOAT;
-        ty = seg.pts.y[i] + (Math.cos(clock * sp * 0.9 + ph) + 0.5 * Math.cos(clock * sp * 1.4 + ph * 3)) * FLOAT;
-        tz = Math.sin(clock * sp * 0.8 + ph) * FLOAT * 4;
-      } else {
-        // Spin the sphere around its upright axis, tilted a little toward the viewer.
-        var bx = ballX[i] * cs + ballZ[i] * sn, bz = -ballX[i] * sn + ballZ[i] * cs, by = ballY[i];
-        tx = bx * R; ty = (by * tc - bz * ts) * R; tz = (by * ts + bz * tc) * R;
-      }
       var k = (e - delay[i] * MORPH * 0.4) / (MORPH * 0.6);
       k = k <= 0 ? 0 : k >= 1 ? 1 : ease(k);
-      px[i] = fx[i] + (tx - fx[i]) * k; py[i] = fy[i] + (ty - fy[i]) * k; pz[i] = fz[i] + (tz - fz[i]) * k;
+      var ax = fx[i], ay = fy[i], az = fz[i];
+      if (seg.live && k < 1) { shapeAt(seg.fromPts, i); ax = sx; ay = sy; az = sz; }   // old shape, still moving
+      shapeAt(seg.pts, i);
+      px[i] = ax + (sx - ax) * k; py[i] = ay + (sy - ay) * k; pz[i] = az + (sz - az) * k;
     }
     if (e >= MORPH + seg.hold) next();
   }
