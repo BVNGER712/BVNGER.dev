@@ -95,6 +95,18 @@ header.top nav a:hover{background:#292744;color:#fff}
 }
 .rule{height:3px;width:min(320px,60%);background:var(--brand-gradient);border-radius:2px;margin:20px 0 0}
 
+/* Particle wordmark under the header (particles.js). */
+.pfx{padding-block:18px 34px;border-bottom:1px solid var(--line-soft)}
+#pfx{display:block;width:100%;height:clamp(220px,32vw,360px)}
+.pfx-form{display:flex;justify-content:center;gap:8px;margin-top:8px}
+.pfx-form input{
+  font-family:var(--font-mono);font-size:14px;color:var(--fg-strong);background:#141a2e;
+  border:1px solid #3c405d;border-radius:10px;padding:11px 14px;width:min(260px,100%);min-width:0;
+}
+.pfx-form input::placeholder{color:var(--dim)}
+.pfx-form input:focus{outline:none;border-color:var(--cyan)}
+.pfx-form .btn{cursor:pointer;line-height:normal}
+
 section{padding-block:52px;border-bottom:1px solid var(--line-soft)}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
 h2{
@@ -271,6 +283,14 @@ footer .legal a:hover{color:var(--cyan-hi)}
       <a href="#contact">Contact</a>
     </nav>
   </header>
+
+  <div class="pfx">
+    <canvas id="pfx" role="img" aria-label="Neon dots that spell BVNGER, fold into a spinning ball, then spell BVNGER again"></canvas>
+    <form class="pfx-form" id="pfx-form" autocomplete="off">
+      <input id="pfx-word" type="text" maxlength="12" placeholder="Type a word" aria-label="Type a word for the dots to spell" enterkeyhint="go">
+      <button class="btn primary" type="submit">Create</button>
+    </form>
+  </div>
 
 
   <section id="projects">
@@ -468,5 +488,6 @@ footer .legal a:hover{color:var(--cyan-hi)}
 })();
 </script>
 <script src="/rain.js" defer></script>
+<script src="/particles.js" defer></script>
 </body>
 </html>
