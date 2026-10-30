@@ -13,7 +13,7 @@
   var FONT = '"Barlow Semi Condensed","Arial Narrow",sans-serif';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var MORPH = reduce ? 0.001 : 1.8;                  // seconds for one shape change
-  var HOLD_HOME = reduce ? Infinity : 5, HOLD_BALL = 3, HOLD_TYPED = 5.5;
+  var HOLD_HOME = reduce ? Infinity : 5, HOLD_BALL = 3, HOLD_TYPED = 5;
 
   // Preview hooks for recording videos of the effect: ?pfxt=<ms> draws one still frame at that time,
   // and ?pfxword=WORD&pfxwordat=<ms> acts as if a visitor typed WORD at that time.
@@ -65,8 +65,15 @@
   var gctx = gal.getContext('2d'), cctx = cloud.getContext('2d'), CLOUD_SCALE = 0.25;
   var GAL_OPEN = 1.5, GAL_CLOSE = 1.5;               // seconds to burst out, and to get sucked back into the ball
   var GAL_WIND = 4.2, GAL_TILT = -0.12;            // how tightly the arms curl, and how far the galaxy leans
+  // Inner stars orbit faster than outer ones, so the arms wind tighter the longer the stars have been turning.
+  // Every galaxy starts as if they've been turning this many seconds, which makes each one look exactly the same.
+  var GAL_TURNED = 13.4;
+  // Seconds of random head start between stars as the galaxy opens. A little keeps its leading edge soft, but too much
+  // breaks up the swirl into loose dust.
+  var GAL_SPREAD = 0.25;
+  var GAL_CLOUD = 0.2;                             // how strong the galaxy's soft colour clouds are, 0 to 1
   var M = 0, PUFFS = 130, galOn = false, galNext = -1, galStart = 0, galClosing = false, galClose = 0, galPulse = 0, galDrawn = false;
-  var gT, gA, gC, gSize, gPh, gRx, gRy, gX, gY, gL, gList, gFill, gApart = 0, gBpart = 0;
+  var gT, gA, gC, gSize, gPh, gLate, gRx, gRy, gX, gY, gL, gList, gApart = 0, gBpart = 0;
 
   // One small picture per colour, drawn once and reused for every dot: a round orb with a bright
   // centre, and a soft glow that sits behind it.
@@ -79,7 +86,7 @@
     COLORS.forEach(function(hex){
       var g = document.createElement('canvas'); g.width = g.height = S;
       var c = g.getContext('2d'), gr = c.createRadialGradient(h, h, 0, h, h, h);
-      gr.addColorStop(0, rgba(hex, 0.5)); gr.addColorStop(0.3, rgba(hex, 0.2)); gr.addColorStop(1, rgba(hex, 0));
+      gr.addColorStop(0, rgba(hex, 0.8)); gr.addColorStop(0.3, rgba(hex, 0.32)); gr.addColorStop(1, rgba(hex, 0));
       c.fillStyle = gr; c.fillRect(0, 0, S, S);
       glows.push(g);
       var o = document.createElement('canvas'); o.width = o.height = S;
@@ -118,14 +125,9 @@
     // Galaxy stars: three curled arms, pink near the middle and blue at the rim. The first few are big soft clouds.
     M = W < 560 ? 1600 : 4200;
     gT = new Float32Array(M); gA = new Float32Array(M); gC = new Uint8Array(M); gSize = new Float32Array(M);
-    gPh = new Float32Array(M); gRx = new Float32Array(M); gRy = new Float32Array(M);
+    gPh = new Float32Array(M); gLate = new Float32Array(M); gRx = new Float32Array(M); gRy = new Float32Array(M);
     gX = new Float32Array(M); gY = new Float32Array(M); gL = new Float32Array(M);
     gList = [[], [], []];
-    // Star colours: each neon colour mixed slightly toward white, like the bright centre of the orbs.
-    gFill = COLORS.map(function(hex){
-      var v = parseInt(hex.slice(1), 16), mix = function(ch){ return Math.round(ch + (255 - ch) * 0.12); };
-      return 'rgb(' + mix(v >> 16) + ',' + mix((v >> 8) & 255) + ',' + mix(v & 255) + ')';
-    });
     galOn = false; galNext = -1; galClosing = false; galClose = 0; galPulse = 0;
     for (var g = 0; g < M; g++) {
       // Most stars gather along an arm, thicker near the middle. Every eighth star and a third of the clouds fill the
@@ -138,6 +140,7 @@
       if (g >= PUFFS) gList[gC[g]].push(g);
       gSize[g] = g < PUFFS ? (35 + rnd() * 55) * (W < 560 ? 0.6 : 1) : (0.55 + rnd() * 0.55) * (W < 560 ? 0.8 : 1);
       gPh[g] = rnd() * Math.PI * 2;
+      gLate[g] = (gPh[g] * 57.3) % 1;   // how late this star sets off, 0 to 1. Made from gPh, so no other random number changes.
     }
     byColor = [[], [], []];
     var golden = Math.PI * (3 - Math.sqrt(5));
@@ -194,8 +197,8 @@
     return (shapes[word] = {x: sx, y: sy, halfW: halfW, halfH: halfH});
   }
 
-  // Start the galaxy around a word. Every star sits on an oval ring between the word's edge and the galaxy's rim,
-  // so the letters stay clear while it's fully open.
+  // Start the galaxy. Every star sits on an oval ring between BVNGER's edge and the galaxy's rim, so BVNGER stays
+  // clear while it's fully open. A visitor's word gets this same galaxy, sized from BVNGER and not from their word.
   function startGalaxy(pts){
     if (reduce) return;
     // Sized from the window's width only. Window height can change while the page is open (a phone's address bar
@@ -215,7 +218,7 @@
   }
 
   function stepGalaxy(dt){
-    if (galNext >= 0 && clock >= galNext) { galNext = -1; startGalaxy(seg.pts); }
+    if (galNext >= 0 && clock >= galNext) { galNext = -1; startGalaxy(shapes[HOME]); }
     if (!galOn) return;
     var a = clock - galStart;
     // It slowly breathes in, then back out a little past where it started, then settles.
@@ -257,11 +260,11 @@
 
     var cx = box.left + box.width / 2 - gb.left + shiftX, cy = box.top + box.height / 2 - gb.top, a = clock - galStart;
     var closeK = ease(galClose > 1 ? 1 : galClose), fade = Math.min(1, a / 0.35) * (1 - closeK * closeK * closeK);
-    var ct = Math.cos(GAL_TILT), st = Math.sin(GAL_TILT);
+    var ct = Math.cos(GAL_TILT), st = Math.sin(GAL_TILT), turned = GAL_TURNED + a;
     gctx.globalCompositeOperation = cctx.globalCompositeOperation = 'lighter';
 
-    // A flash of light as it bursts out of the ball, and a softer one as it pushes back out.
-    var flash = a < 1.1 ? (1 - a / 1.1) * (1 - a / 1.1) * 0.85 : 0, grow = 0.25 + Math.min(1, a / 1.1) * 0.95;
+    // A wide soft glow that swells and fades as it opens, and a fainter one as it pushes back out.
+    var flash = bump(0, 1.6, a) * 0.4, grow = 0.25 + Math.min(1, a / GAL_OPEN) * 0.95;
     if (flash > 0.005) {
       cctx.globalAlpha = flash;
       cctx.drawImage(core, cx - gApart * grow, cy - gBpart * grow, gApart * grow * 2, gBpart * grow * 2);
@@ -274,30 +277,34 @@
 
     // Work out where everything is first, then draw it: clouds and a few star glows as pictures, then the stars.
     for (var g = 0; g < M; g++) {
-        var t = gT[g], open = (a - t * 0.45) / (GAL_OPEN - 0.45);
-        open = open <= 0 ? 0 : open >= 1 ? 1 : 1 - Math.pow(1 - open, 3);
+        // The whole galaxy opens together, so its arms stay whole and its edge stays as soft as the finished galaxy's.
+        // The curve eases in and out, so there's no sudden start or stop.
+        var t = gT[g], open = (a - gLate[g] * GAL_SPREAD) / GAL_OPEN;
+        open = open <= 0 ? 0 : open >= 1 ? 1 : open * open * (3 - 2 * open);
         // Each star unwinds as it flies out and winds back up as it's sucked in. Inner stars orbit faster, like a real galaxy.
-        var ang = gA[g] + t * GAL_WIND + clock * (0.12 + 0.34 * (1 - t)) - (1 - open) * 3 + closeK * 3.6;
+        var ang = gA[g] + t * GAL_WIND + turned * (0.12 + 0.34 * (1 - t)) - (1 - open) * 3 + closeK * 3.6;
         // The breathing mostly moves side to side. Up and down it only moves 40% as much, so it never looks like it's hopping.
         var sc = open * (1 - closeK), breathe = galPulse * (1.15 - t * 0.5);
         var ex = Math.cos(ang) * gRx[g] * sc * (1 + breathe), ey = Math.sin(ang) * gRy[g] * sc * (1 + breathe * 0.4);
         gX[g] = cx + ex * ct - ey * st; gY[g] = cy + ex * st + ey * ct;
-        gL[g] = fade * (1 - t * t * 0.55) * (0.62 + 0.38 * Math.sin(clock * 2 + gPh[g]));
+        // A star is dark near the middle and brightens as it travels out (and dims again as it's sucked back in),
+        // so nothing piles up into a bright dot.
+        gL[g] = fade * (1 - t * t * 0.3) * (0.78 + 0.22 * Math.sin(turned * 2 + gPh[g])) * Math.min(1, sc * sc * 6);
     }
     for (g = 0; g < PUFFS; g++) {
       var r = gSize[g];
-      cctx.globalAlpha = gL[g] * 0.16;
+      cctx.globalAlpha = gL[g] * GAL_CLOUD;
       cctx.drawImage(glows[gC[g]], gX[g] - r, gY[g] - r, r * 2, r * 2);
     }
     for (g = PUFFS; g < M; g += 3) {
       r = gSize[g] * GLOW;
-      gctx.globalAlpha = gL[g] * 0.8;
+      gctx.globalAlpha = gL[g];
       gctx.drawImage(glows[gC[g]], gX[g] - r, gY[g] - r, r * 2, r * 2);
     }
     // The stars are only a pixel or two across, so a plain dot looks the same as a little orb picture and draws far
     // faster. One colour at a time, so the browser isn't switching colour for every star.
     for (var c = 0; c < 3; c++) {
-      gctx.fillStyle = gFill[c];
+      gctx.fillStyle = COLORS[c];
       for (var n = 0, list = gList[c]; n < list.length; n++) {
         g = list[n];
         var s = gSize[g];
