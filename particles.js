@@ -1,4 +1,4 @@
-// Particle effect under the header. Neon dots gather into a spinning ball and stay there.
+// Particle effect under the header. A small soft orb floats in from the top of the page, settles, and opens into a spinning ball.
 // A visitor can type one word: the dots spell it for a few seconds, then go back into the ball.
 // The ball acts like a blob of water, and a galaxy bursts out around each word once its letters have formed.
 (function(){
@@ -14,6 +14,9 @@
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var MORPH = reduce ? 0.001 : 1.8;                  // seconds for one shape change
   var HOLD_TYPED = 5;                                // seconds a visitor's word stays up before going back into the ball
+  var INTRO = reduce ? 0.001 : 4;                    // seconds the soft glow takes to open into the orb when the page loads
+  var LIGHT_UP = reduce ? 0.001 : 1.5;               // seconds the dots take to fade in when the page loads
+  var TRAVEL = reduce ? 0 : 8;                     // seconds the small orb floats around the page before it settles
 
   // Preview hooks for recording videos of the effect: ?pfxt=<ms> draws one still frame at that time,
   // and ?pfxword=WORD&pfxwordat=<ms> acts as if a visitor typed WORD at that time.
@@ -40,6 +43,9 @@
   var RIPPLE = 0.07;                                 // how far ripples lift the ball's surface (share of its radius)
   var rip1, rip2, rip3, shine, coreAmt = 0;          // rip1/2/3 = each orb's spot along the three background waves
   var orbs = [], glows = [], core;
+  // The small orb's float when the page loads. It's drawn on the galaxy's full-window layer, because the strip's own
+  // canvas would clip it. flyEnd = when it arrives, openStart/openLen = when it opens into the ball and for how long.
+  var inner, flyEnd = 0, flyStop = -1, flyX = 0, flyY = 0, flyPh = [0, 0, 0, 0, 0], flyDrawn = false, openStart = 0, openLen = 0;
 
   // The ball acts like a blob of water held up against gravity. Each of these is a spring: gravity holds it off
   // centre (rest), random splashes knock it, and surface tension pulls it back so it wobbles and settles.
@@ -118,7 +124,7 @@
     seed = 7;
     px = new Float32Array(N); py = new Float32Array(N); pz = new Float32Array(N);
     fx = new Float32Array(N); fy = new Float32Array(N); fz = new Float32Array(N);
-    delay = new Float32Array(N); phase = new Float32Array(N); drift = new Float32Array(N); size = new Float32Array(N);
+    delay = new Float32Array(N); phase = new Float32Array(N); drift = new Float32Array(N); size = new Float32Array(N); inner = new Float32Array(N);
     FLOAT = reduce ? 0 : (W < 560 ? 1.2 : 1.8);
     ballX = new Float32Array(N); ballY = new Float32Array(N); ballZ = new Float32Array(N);
     rip1 = new Float32Array(N); rip2 = new Float32Array(N); rip3 = new Float32Array(N); shine = new Float32Array(N);
@@ -155,14 +161,22 @@
       rip3[i] = ballX[i] * 0.77 - y * 0.55 - ballZ[i] * 0.32;
       delay[i] = rnd(); phase[i] = rnd() * Math.PI * 2; drift[i] = 0.5 + rnd() * 0.6; size[i] = (0.7 + rnd() * 0.4) * (W < 560 ? 0.8 : 1);
       byColor[Math.floor(rnd() * 3)].push(i);
-      // Start scattered over the whole strip, then fly in to the ball.
-      px[i] = (rnd() - 0.5) * W; py[i] = (rnd() - 0.5) * H; pz[i] = 0;
+      // Start packed into a small soft glow, thicker in the middle and thinning out to nothing, so it has no edge.
+      // Each dot sits on the straight line out to its own spot on the ball, so the glow opens without dots crossing.
+      inner[i] = R * (0.08 + 0.4 * rnd() * rnd());
+      px[i] = ballX[i] * inner[i]; py[i] = y * inner[i]; pz[i] = ballZ[i] * inner[i];
     }
     shapes = {};
     seg = null;
     clock = 0;
     wordShape(HOME);
-    begin('ball', Infinity, false);
+    flyEnd = 0; flyStop = -1;
+    begin('ball', Infinity, false, INTRO);
+    // The orb stays small and packed until it arrives, then opens. Every page load floats a different way.
+    seg.start = TRAVEL; seg.packed = true; nextSplash = TRAVEL + INTRO * 0.7;
+    flyEnd = openStart = TRAVEL; openLen = INTRO;
+    var pick = freezeAt === null ? Math.random : rnd;
+    for (var f = 0; f < flyPh.length; f++) flyPh[f] = pick() * Math.PI * 2;
   }
 
   // Points that cover the letters of a word, centred on the strip, one per dot.
@@ -232,6 +246,35 @@
     if (galClose >= 1) { galOn = false; galClose = 0; }
   }
 
+  // Size the full-window layer to its own box on the page, so the browser never has to stretch it to fit.
+  // (A phone's window height and its fixed-position box can differ while the address bar is sliding.)
+  var fit = {vw: 0, vh: 0, d: 1, cx: 0, cy: 0, box: null};
+  function fitGal(){
+    var box = canvas.getBoundingClientRect(), gb = gal.getBoundingClientRect(), vw = gb.width, vh = gb.height, shiftX = 0;
+    if (shot) {
+      // Preview stills: headless Edge reports a shorter window than the picture it takes, so pin the real size.
+      vw = shot[0]; vh = shot[1];
+      gal.style.width = cloud.style.width = vw + 'px'; gal.style.height = cloud.style.height = vh + 'px';
+      shiftX = (vw - window.innerWidth) / 2;
+    }
+    var d = Math.min(window.devicePixelRatio || 1, 1.5), gw = Math.round(vw * d), gh = Math.round(vh * d);
+    if (gal.width !== gw || gal.height !== gh) { gal.width = gw; gal.height = gh; }
+    fit.vw = vw; fit.vh = vh; fit.d = d; fit.box = box;
+    fit.cx = box.left + box.width / 2 - gb.left + shiftX; fit.cy = box.top + box.height / 2 - gb.top;
+  }
+
+  // Where the small orb is right now, away from its final spot. It drops in from above the window, loops through a
+  // rough figure 8 with two slower drifts mixed in so it never looks like a set path, then eases to a stop. Everything
+  // here is sine waves and smooth curves, so its speed never changes suddenly. If a visitor types a word while it's
+  // floating, it glides home in the time the word takes to form.
+  function flyPath(cy, vw, vh){
+    var p = clock / TRAVEL, settle = 1 - ease(p < 0.5 ? 0 : p > 1 ? 1 : (p - 0.5) / 0.5), enter = 1 - ease(p > 0.35 ? 1 : p / 0.35);
+    var th = p * Math.PI * 2 + 0.5 * Math.sin(p * 7 + flyPh[0]), ax = vw * 0.34, ay = Math.min(vh * 0.26, ax * 0.7);
+    flyX = settle * (ax * Math.sin(th) + ax * 0.18 * Math.sin(clock * 1.1 + flyPh[1]) + ax * 0.1 * Math.sin(clock * 2.3 + flyPh[2]));
+    flyY = settle * (ay * Math.sin(th * 2) + ay * 0.2 * Math.sin(clock * 1.4 + flyPh[3]) + ay * 0.1 * Math.sin(clock * 2.1 + flyPh[4])) - (cy + ay * 1.4 + R) * enter;
+    if (flyStop >= 0) { var home = 1 - ease((clock - flyStop) / (flyEnd - flyStop)); flyX *= home; flyY *= home; }
+  }
+
   function drawGalaxy(){
     if (!galOn) {
       if (galDrawn) {
@@ -242,17 +285,8 @@
       return;
     }
     if (!galDrawn) { gal.style.display = cloud.style.display = 'block'; galDrawn = true; }
-    // Size the drawing to the canvas's own box on the page, so the browser never has to stretch it to fit.
-    // (A phone's window height and its fixed-position box can differ while the address bar is sliding.)
-    var box = canvas.getBoundingClientRect(), gb = gal.getBoundingClientRect(), vw = gb.width, vh = gb.height, shiftX = 0;
-    if (shot) {
-      // Preview stills: headless Edge reports a shorter window than the picture it takes, so pin the real size.
-      vw = shot[0]; vh = shot[1];
-      gal.style.width = cloud.style.width = vw + 'px'; gal.style.height = cloud.style.height = vh + 'px';
-      shiftX = (vw - window.innerWidth) / 2;
-    }
-    var d = Math.min(window.devicePixelRatio || 1, 1.5), gw = Math.round(vw * d), gh = Math.round(vh * d);
-    if (gal.width !== gw || gal.height !== gh) { gal.width = gw; gal.height = gh; }
+    fitGal();
+    var box = fit.box, vw = fit.vw, vh = fit.vh, d = fit.d;
     var cw = Math.ceil(vw * CLOUD_SCALE), ch = Math.ceil(vh * CLOUD_SCALE);
     if (cloud.width !== cw || cloud.height !== ch) { cloud.width = cw; cloud.height = ch; }
     gctx.setTransform(d, 0, 0, d, 0, 0);
@@ -261,7 +295,7 @@
     cctx.clearRect(0, 0, vw, vh);
     if (box.bottom < -gBpart || box.top > vh + gBpart) return;   // scrolled far away: nothing to see
 
-    var cx = box.left + box.width / 2 - gb.left + shiftX, cy = box.top + box.height / 2 - gb.top, a = clock - galStart;
+    var cx = fit.cx, cy = fit.cy, a = clock - galStart;
     var closeK = ease(galClose > 1 ? 1 : galClose), fade = Math.min(1, a / 0.35) * (1 - closeK * closeK * closeK);
     var ct = Math.cos(GAL_TILT), st = Math.sin(GAL_TILT), turned = GAL_TURNED + a;
     gctx.globalCompositeOperation = cctx.globalCompositeOperation = 'lighter';
@@ -322,14 +356,16 @@
   // Start moving every dot to a new shape ('ball' or a word). If the old shape had finished forming, the dots
   // leave it while it keeps moving (the ball keeps spinning, a word keeps floating). Only a shape cut off
   // mid-change starts from a frozen copy of where the dots are.
-  function begin(shape, hold, typed){
-    var live = !!seg && clock - seg.start >= MORPH;
+  function begin(shape, hold, typed, morph){
+    var live = !!seg && clock - seg.start >= seg.morph;
+    morph = morph || MORPH;
+    if (clock < flyEnd && flyStop < 0 && shape !== 'ball') { flyStop = openStart = clock; flyEnd = clock + MORPH; openLen = MORPH; }
     for (var i = 0; i < N; i++) { fx[i] = px[i]; fy[i] = py[i]; fz[i] = pz[i]; }
-    seg = {shape: shape, hold: hold, typed: typed, start: clock, pts: shape === 'ball' ? null : wordShape(shape),
+    seg = {shape: shape, hold: hold, typed: typed, start: clock, morph: morph, pts: shape === 'ball' ? null : wordShape(shape),
            live: live, fromPts: live ? seg.pts : null};
     galClosing = true;                    // any galaxy that's out gets sucked back in
     galNext = -1;
-    if (shape === 'ball') nextSplash = clock + MORPH * 0.7;   // the first splash lands as the ball pulls together
+    if (shape === 'ball') nextSplash = clock + morph * 0.7;   // the first splash lands as the ball pulls together
     else galNext = clock + MORPH;                             // a word: the galaxy comes out once its letters have formed
   }
 
@@ -405,46 +441,65 @@
       ring.front = age * RING_SPEED; ring.env = ring.amp * left * left;
     }
     for (var i = 0; i < N; i++) {
-      var k = (e - delay[i] * MORPH * 0.4) / (MORPH * 0.6);
+      var k = (e - delay[i] * seg.morph * 0.4) / (seg.morph * 0.6);
       k = k <= 0 ? 0 : k >= 1 ? 1 : ease(k);
       var ax = fx[i], ay = fy[i], az = fz[i], ac = 0;
       if (seg.live && k < 1) { shapeAt(seg.fromPts, i); ax = sx; ay = sy; az = sz; ac = crest; }   // old shape, still moving
+      else if (seg.packed && k < 1) { shapeAt(null, i); var pack = inner[i] / R; ax = sx * pack; ay = sy * pack; az = sz * pack; }   // the small orb is a tiny copy of the ball, so it opens with no dots crossing
       shapeAt(seg.pts, i);
       px[i] = ax + (sx - ax) * k; py[i] = ay + (sy - ay) * k; pz[i] = az + (sz - az) * k;
       shine[i] = ac + (crest - ac) * k;
     }
-    if (e >= MORPH + seg.hold) next();
+    if (e >= seg.morph + seg.hold) next();
   }
 
   function draw(){
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    var F = R * 3, cx = W / 2, cy = H / 2;
-    // The light inside the ball goes down first, pulsing slowly, so every orb sits in front of it.
+    var F = R * 3, cx = W / 2, cy = H / 2, dc = ctx;
+    if (clock < flyEnd) {
+      // Still floating: draw on the full-window layer behind the page, so nothing can clip the orb.
+      if (!flyDrawn) { gal.style.display = 'block'; flyDrawn = true; }
+      fitGal();
+      gctx.setTransform(fit.d, 0, 0, fit.d, 0, 0);
+      gctx.clearRect(0, 0, fit.vw, fit.vh);
+      flyPath(fit.cy, fit.vw, fit.vh);
+      cx = fit.cx + flyX; cy = fit.cy + flyY; dc = gctx;
+    } else if (flyDrawn) {
+      flyDrawn = false;
+      if (!galOn) { gctx.setTransform(1, 0, 0, 1, 0, 0); gctx.clearRect(0, 0, gal.width, gal.height); gal.style.display = 'none'; }
+    }
+    // When the page loads everything fades in, and the round orbs come in slowest. Their white centres would stack up
+    // into a hard white dot while the dots are packed together, so at first it's mostly the soft glows.
+    var fadeIn = clock < LIGHT_UP ? ease(clock / LIGHT_UP) : 1;
+    var solid = clock < openStart ? 0 : clock >= openStart + openLen ? 1 : ease((clock - openStart) / openLen);
+    // The light inside the ball goes down first, pulsing slowly, so every orb sits in front of it. It's small while the orb is small.
     if (coreAmt > 0.005) {
-      var pulse = Math.sin(moved * 1.3), rc = R * (1 + 0.06 * pulse), coreY = cy + BOB.now * R;
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = coreAmt * (0.66 + 0.22 * pulse);
-      ctx.drawImage(core, cx - rc, coreY - rc, rc * 2, rc * 2);
+      var pulse = Math.sin(moved * 1.3), rc = R * (1 + 0.06 * pulse) * (0.5 + 0.5 * solid), coreY = cy + BOB.now * R;
+      dc.globalCompositeOperation = 'lighter';
+      dc.globalAlpha = coreAmt * (0.66 + 0.22 * pulse) * fadeIn;
+      dc.drawImage(core, cx - rc, coreY - rc, rc * 2, rc * 2);
     }
     // Two passes: the glows add up into a soft neon haze, then the round orbs go on top of it.
     for (var pass = 0; pass < 2; pass++) {
-      ctx.globalCompositeOperation = pass ? 'source-over' : 'lighter';
+      dc.globalCompositeOperation = pass ? 'source-over' : 'lighter';
       for (var c = 0; c < 3; c++) {
         var img = pass ? orbs[c] : glows[c], list = byColor[c];
         for (var n = 0; n < list.length; n++) {
           var i = list[n], s = F / (F + pz[i]), x = cx + px[i] * s, y = cy + py[i] * s;
-          var a = 0.9 - pz[i] / (R * 2); a = a < 0.3 ? 0.3 : a > 1 ? 1 : a;
+          var a = 0.9 - pz[i] / (R * 2); a = (a < 0.3 ? 0.3 : a > 1 ? 1 : a) * fadeIn * (pass ? 0.12 + 0.88 * solid : 0.35 + 0.65 * solid);
+          // While it opens, a dot is dim near the middle and brightens as it travels out, so the packed centre stays soft.
+          if (solid < 1) { var far = (px[i] * px[i] + py[i] * py[i] + pz[i] * pz[i]) / (R * R) * 3; if (far < 1) a *= far * far; }
           var r = size[i] * s * (pass ? 1 : GLOW);
           // Ripple light: orbs in a dip go dimmer and orbs on a crest glow harder, with the orb size unchanged.
           var w = shine[i], dip = w < 0 ? -w * 0.55 : 0, lit = w > 0 ? w * 0.4 : 0;
-          ctx.globalAlpha = pass ? a * (1 - dip) : Math.min(1, a * (0.8 - dip * 0.8 + lit));
-          ctx.drawImage(img, x - r, y - r, r * 2, r * 2);
+          dc.globalAlpha = pass ? a * (1 - dip) : Math.min(1, a * (0.8 - dip * 0.8 + lit));
+          dc.drawImage(img, x - r, y - r, r * 2, r * 2);
         }
       }
     }
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
+    dc.globalAlpha = 1;
+    dc.globalCompositeOperation = 'source-over';
     drawGalaxy();
   }
 
