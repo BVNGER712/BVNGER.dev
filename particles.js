@@ -1,4 +1,4 @@
-// Particle wordmark under the header. Neon dots spell BVNGER, fold into a spinning ball, then spell BVNGER again.
+// Particle effect under the header. Neon dots gather into a spinning ball and stay there.
 // A visitor can type one word: the dots spell it for a few seconds, then go back into the ball.
 // The ball acts like a blob of water, and a galaxy bursts out around each word once its letters have formed.
 (function(){
@@ -9,11 +9,11 @@
   var input = document.getElementById('pfx-word');
 
   var COLORS = ['#b026ff', '#2f7bff', '#ff2ec4'];   // neon purple, blue, pink
-  var HOME = 'BVNGER';
+  var HOME = 'BVNGER';                               // never spelled on its own now, but every galaxy is sized to fit it
   var FONT = '"Barlow Semi Condensed","Arial Narrow",sans-serif';
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var MORPH = reduce ? 0.001 : 1.8;                  // seconds for one shape change
-  var HOLD_HOME = reduce ? Infinity : 5, HOLD_BALL = 3, HOLD_TYPED = 5;
+  var HOLD_TYPED = 5;                                // seconds a visitor's word stays up before going back into the ball
 
   // Preview hooks for recording videos of the effect: ?pfxt=<ms> draws one still frame at that time,
   // and ?pfxword=WORD&pfxwordat=<ms> acts as if a visitor typed WORD at that time.
@@ -52,11 +52,13 @@
   var rings = [], nextSplash = 0, wave1 = 0, wave2 = 0, wave3 = 0;
   var RING_LIFE = 2.6, RING_SPEED = 1.1, RING_WIDTH = 0.3;
 
-  // The galaxy that bursts out of the ball when a word forms. It has its own see-through canvas over the whole
-  // window, so it can spill past the panels on the page. Clicks go straight through it to the page.
+  // The galaxy that bursts out of the ball when a word forms. It has its own see-through canvas across the whole
+  // window, so it can spill past the panels on the page. It sits behind the page (z-index -1): measured on an iPhone
+  // in Safari, any full-window layer in front of the page drops everything to 12 frames a second, even with nothing
+  // drawn on it, and the same galaxy behind the page holds 60.
   var gal = document.createElement('canvas');
   gal.setAttribute('aria-hidden', 'true');
-  gal.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:10;pointer-events:none;display:none';
+  gal.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:none';
   // The galaxy's soft clouds and flashes go on a second layer underneath, drawn at quarter size and stretched to fit
   // by the browser. They're blurry anyway, so nobody can tell, and it's about 16 times less work every frame.
   var cloud = gal.cloneNode();
@@ -86,7 +88,7 @@
     COLORS.forEach(function(hex){
       var g = document.createElement('canvas'); g.width = g.height = S;
       var c = g.getContext('2d'), gr = c.createRadialGradient(h, h, 0, h, h, h);
-      gr.addColorStop(0, rgba(hex, 0.8)); gr.addColorStop(0.3, rgba(hex, 0.32)); gr.addColorStop(1, rgba(hex, 0));
+      gr.addColorStop(0, rgba(hex, 0.65)); gr.addColorStop(0.3, rgba(hex, 0.26)); gr.addColorStop(1, rgba(hex, 0));
       c.fillStyle = gr; c.fillRect(0, 0, S, S);
       glows.push(g);
       var o = document.createElement('canvas'); o.width = o.height = S;
@@ -153,13 +155,14 @@
       rip3[i] = ballX[i] * 0.77 - y * 0.55 - ballZ[i] * 0.32;
       delay[i] = rnd(); phase[i] = rnd() * Math.PI * 2; drift[i] = 0.5 + rnd() * 0.6; size[i] = (0.7 + rnd() * 0.4) * (W < 560 ? 0.8 : 1);
       byColor[Math.floor(rnd() * 3)].push(i);
-      // Start scattered over the whole strip, then fly in to BVNGER.
+      // Start scattered over the whole strip, then fly in to the ball.
       px[i] = (rnd() - 0.5) * W; py[i] = (rnd() - 0.5) * H; pz[i] = 0;
     }
     shapes = {};
     seg = null;
     clock = 0;
-    begin(HOME, HOLD_HOME, false);
+    wordShape(HOME);
+    begin('ball', Infinity, false);
   }
 
   // Points that cover the letters of a word, centred on the strip, one per dot.
@@ -289,7 +292,7 @@
         gX[g] = cx + ex * ct - ey * st; gY[g] = cy + ex * st + ey * ct;
         // A star is dark near the middle and brightens as it travels out (and dims again as it's sucked back in),
         // so nothing piles up into a bright dot.
-        gL[g] = fade * (1 - t * t * 0.3) * (0.78 + 0.22 * Math.sin(turned * 2 + gPh[g])) * Math.min(1, sc * sc * 6);
+        gL[g] = fade * (1 - t * t * 0.4) * (0.72 + 0.28 * Math.sin(turned * 2 + gPh[g])) * Math.min(1, sc * sc * 6);
     }
     for (g = 0; g < PUFFS; g++) {
       var r = gSize[g];
@@ -298,7 +301,7 @@
     }
     for (g = PUFFS; g < M; g += 3) {
       r = gSize[g] * GLOW;
-      gctx.globalAlpha = gL[g];
+      gctx.globalAlpha = gL[g] * 0.9;
       gctx.drawImage(glows[gC[g]], gX[g] - r, gY[g] - r, r * 2, r * 2);
     }
     // The stars are only a pixel or two across, so a plain dot looks the same as a little orb picture and draws far
@@ -320,14 +323,14 @@
   // leave it while it keeps moving (the ball keeps spinning, a word keeps floating). Only a shape cut off
   // mid-change starts from a frozen copy of where the dots are.
   function begin(shape, hold, typed){
-    var live = !!seg && clock - seg.start >= MORPH, first = !seg;
+    var live = !!seg && clock - seg.start >= MORPH;
     for (var i = 0; i < N; i++) { fx[i] = px[i]; fy[i] = py[i]; fz[i] = pz[i]; }
     seg = {shape: shape, hold: hold, typed: typed, start: clock, pts: shape === 'ball' ? null : wordShape(shape),
            live: live, fromPts: live ? seg.pts : null};
     galClosing = true;                    // any galaxy that's out gets sucked back in
     galNext = -1;
     if (shape === 'ball') nextSplash = clock + MORPH * 0.7;   // the first splash lands as the ball pulls together
-    else if (!first) galNext = clock + MORPH;                 // every later word: the galaxy bursts out once its letters have formed
+    else galNext = clock + MORPH;                             // a word: the galaxy comes out once its letters have formed
   }
 
   // A random knock on the water: the blob wobbles, and a ring of ripples spreads from a random spot on the side
@@ -343,15 +346,13 @@
     nextSplash = clock + 0.5 + rnd() * 1.1;
   }
 
-  // The loop: BVNGER -> ball -> BVNGER. A visitor's word also goes back into the ball, then on to BVNGER.
-  // With reduced motion there is no spinning ball, so a visitor's word goes straight back to BVNGER.
+  // The ball stays until a visitor types a word, and their word goes back into the ball when its time is up.
   function next(){
-    if (seg.shape === 'ball' || (seg.typed && reduce)) begin(HOME, HOLD_HOME, false);
-    else begin('ball', HOLD_BALL, false);
+    begin('ball', Infinity, false);
   }
 
   // Where dot i sits right now in a shape: a word (pts) or the spinning ball (pts null). Result in sx, sy, sz.
-  var sx = 0, sy = 0, sz = 0, crest = 0, cs = 1, sn = 0, tc = Math.cos(0.35), ts = Math.sin(0.35);
+  var moved = 0, sx = 0, sy = 0, sz = 0, crest = 0, cs = 1, sn = 0, tc = Math.cos(0.35), ts = Math.sin(0.35);
   function shapeAt(pts, i){
     if (pts) {
       crest = 0;
@@ -382,14 +383,16 @@
 
   function step(dt){
     clock += dt;
-    var e = clock - seg.start, spin = clock * 0.45;
+    var e = clock - seg.start;
+    moved = reduce ? 0 : clock;                     // with reduced motion the ball holds still
+    var spin = moved * 0.45;
     cs = Math.cos(spin); sn = Math.sin(spin);
     coreAmt += ((seg.shape === 'ball' ? 1 : 0) - coreAmt) * Math.min(1, dt * 2);   // inner light eases in and out with the ball
     // The background waves speed up and slow down at their own uneven rates, so they never fall into a pattern.
-    wave1 = clock * 2.4 + 1.6 * Math.sin(clock * 0.41);
-    wave2 = clock * 1.8 + 1.3 * Math.sin(clock * 0.29 + 1);
-    wave3 = clock * 3.7 + 1.1 * Math.sin(clock * 0.53 + 2);
-    if (seg.shape === 'ball' && clock >= nextSplash) splash();
+    wave1 = moved * 2.4 + 1.6 * Math.sin(moved * 0.41);
+    wave2 = moved * 1.8 + 1.3 * Math.sin(moved * 0.29 + 1);
+    wave3 = moved * 3.7 + 1.1 * Math.sin(moved * 0.53 + 2);
+    if (!reduce && seg.shape === 'ball' && clock >= nextSplash) splash();
     stepGalaxy(dt);
     springs.forEach(function(m){
       m.v += (-m.w * m.w * (m.x - m.rest) - m.c * m.v) * dt;
@@ -419,9 +422,9 @@
     var F = R * 3, cx = W / 2, cy = H / 2;
     // The light inside the ball goes down first, pulsing slowly, so every orb sits in front of it.
     if (coreAmt > 0.005) {
-      var pulse = Math.sin(clock * 1.3), rc = R * (1 + 0.06 * pulse), coreY = cy + BOB.now * R;
+      var pulse = Math.sin(moved * 1.3), rc = R * (1 + 0.06 * pulse), coreY = cy + BOB.now * R;
       ctx.globalCompositeOperation = 'lighter';
-      ctx.globalAlpha = coreAmt * (0.75 + 0.25 * pulse);
+      ctx.globalAlpha = coreAmt * (0.66 + 0.22 * pulse);
       ctx.drawImage(core, cx - rc, coreY - rc, rc * 2, rc * 2);
     }
     // Two passes: the glows add up into a soft neon haze, then the round orbs go on top of it.
