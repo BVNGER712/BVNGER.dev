@@ -15,33 +15,34 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="BVNGER logo">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0b1020">
+<meta name="theme-color" content="#0e1014">
 <link rel="icon" href="/bastion/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Graduate&display=swap">
 <style>
-/* Layout: one long page in Bastion's UI language. Navy ground with a violet glow, letter-spaced condensed caps, rounded gradient cards, and a cyan-to-violet gradient used only on the wordmark, rules and scrollbar. */
+/* Layout: one long dark page with letter-spaced condensed caps. The base rules below are the plain version;
+   the "Glow" block at the end of this style sheet adds the violet and cyan light, panels and gradient buttons. */
 :root{
-  --bg:#0b1020;
+  --bg:#0e1014;
   --glow-violet:#29204b;
   --glow-cyan:#0e3644;
-  --panel:#101625;
-  --card-a:#1d1e39;
-  --card-b:#131729;
-  --line:#2a3552;
-  --line-soft:#343755;
-  --line-card:#3b3d5d;
-  --fg:#d5d7e8;
-  --fg-strong:#f4f1ff;
-  --muted:#aab3c8;
-  --dim:#8993aa;
+  --panel:#15181d;
+  --card-a:#15181d;
+  --card-b:#15181d;
+  --line:#2a2e36;
+  --line-soft:#2a2e36;
+  --line-card:#353a44;
+  --fg:#d6d8dd;
+  --fg-strong:#f3f4f6;
+  --muted:#a3a8b2;
+  --dim:#7f8590;
   --cyan:#29c9d2;
   --cyan-hi:#7fe8f0;
   --indigo:#5968d7;
   --violet:#a14ad6;
   --violet-hi:#d477ee;
-  --link:#bdb2ff;
+  --link:#7fe8f0;
   --amber:#f5b957;
   --teal:#39dccf;
   --ink:#06222b;
@@ -52,25 +53,22 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html{scrollbar-color:#5968d7 #0a0f1c}
+html{scrollbar-color:#3a3f48 var(--bg)}
 body{
   margin:0;min-height:100vh;
-  background:
-    radial-gradient(ellipse at 12% -8%,var(--glow-violet) 0,transparent 36%),
-    radial-gradient(ellipse at 96% 2%,var(--glow-cyan) 0,transparent 30%),
-    var(--bg);
+  background:var(--bg);
   background-color:var(--bg);
   color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.6;
   padding-inline:20px;padding-block:0 48px;
 }
 ::-webkit-scrollbar{width:12px;height:12px}
-::-webkit-scrollbar-track{background:#0a0f1c;border:1px solid #25304a;border-radius:6px}
-::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#29c9d2,#5968d7 52%,#a14ad6);border:1px solid #536b9c;border-radius:6px}
-::-webkit-scrollbar-thumb:hover{border-color:var(--cyan-hi)}
-::selection{background:#5968d7;color:#fff}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#3a3f48}
+::-webkit-scrollbar-thumb:hover{background:#4a505b}
+::selection{background:var(--cyan);color:var(--ink)}
 .wrap{max-width:1040px;margin-inline:auto}
 a{color:var(--link)}
-a:hover{color:#e2dcff}
+a:hover{color:#fff}
 :focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 
 header.top{
@@ -78,30 +76,35 @@ header.top{
   padding-block:36px 32px;border-bottom:1px solid var(--line-soft);
 }
 .brand{min-width:0}
-header.top nav{display:flex;gap:6px;flex-wrap:wrap}
+header.top nav{display:flex;gap:4px 24px;flex-wrap:wrap}
 header.top nav a{
-  border:1px solid #3c405d;border-radius:8px;padding:8px 13px;text-decoration:none;
-  font-size:13px;color:#dedcf1;
+  padding:6px 0;text-decoration:none;border-bottom:2px solid transparent;
+  font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg);
 }
-header.top nav a:hover{background:#292744;color:#fff}
+header.top nav a:hover{color:#fff;border-bottom-color:var(--cyan)}
 
 .wordmark{
   font-family:var(--font-display);font-weight:800;text-transform:uppercase;
   font-size:clamp(44px,7.4vw,100px);line-height:.9;letter-spacing:.03em;margin:0;color:var(--fg-strong);
 }
 .wordmark .dev{
-  background:var(--brand-gradient);-webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;color:var(--cyan);
+  color:var(--cyan);
 }
-.rule{height:3px;width:min(320px,60%);background:var(--brand-gradient);border-radius:2px;margin:20px 0 0}
+.rule{display:none}
 
 /* Particle wordmark under the header (particles.js). */
+/* The strip starts closed, so the word box sits right under the header while the small orb floats around behind the
+   page. Typing a word slowly opens the strip (particles.js sets its height), then the dots spell the word. */
 .pfx{padding-block:18px 34px;border-bottom:1px solid var(--line-soft)}
+.pfx-stage{overflow:hidden}
+.pfx-closed .pfx-stage{height:0}
+.pfx-closed{padding-block:28px}
 #pfx{display:block;width:100%;height:clamp(220px,32vw,360px)}
 .pfx-form{display:flex;justify-content:center;gap:8px;margin-top:8px}
+.pfx-closed .pfx-form{margin-top:0}
 .pfx-form input{
-  font-family:var(--font-mono);font-size:14px;color:var(--fg-strong);background:#141a2e;
-  border:1px solid #3c405d;border-radius:10px;padding:11px 14px;width:min(260px,100%);min-width:0;
+  font-family:var(--font-mono);font-size:14px;color:var(--fg-strong);background:var(--panel);
+  border:1px solid var(--line-card);border-radius:3px;padding:11px 14px;width:min(260px,100%);min-width:0;
 }
 .pfx-form input::placeholder{color:var(--dim)}
 .pfx-form input:focus{outline:none;border-color:var(--cyan)}
@@ -115,18 +118,17 @@ h2{
 }
 .sec-note{font-family:var(--font-mono);font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
 
-.ledger{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.ledger{list-style:none;margin:0;padding:0;display:grid;gap:0}
 .row{
   display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr) auto;gap:10px 32px;align-items:start;
-  padding:26px 28px;border:1px solid var(--line-card);border-radius:17px;
-  background:linear-gradient(150deg,var(--card-a),var(--card-b));
+  padding:32px 0;border-top:1px solid var(--line);
 }
 .row h3{
   font-family:var(--font-display);font-weight:800;text-transform:uppercase;
   font-size:30px;line-height:1.05;margin:0;letter-spacing:.06em;color:var(--fg-strong);
 }
 .title{display:flex;align-items:center;gap:14px;min-width:0}
-.emblem{width:56px;height:56px;object-fit:contain;flex:none;filter:drop-shadow(0 0 14px #5968d799)}
+.emblem{width:52px;height:52px;object-fit:contain;flex:none}
 .stack{font-family:var(--font-mono);font-size:12px;color:var(--dim);margin-top:8px;letter-spacing:.03em}
 .row p{margin:0;max-width:62ch;color:#cbd0de}
 .row p.sub{color:var(--muted);margin-top:8px;font-size:15px}
@@ -134,26 +136,25 @@ h2{
 .row p.pitch strong{color:var(--fg-strong);font-weight:600}
 .tag{
   font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
-  padding:5px 11px;border:1px solid currentColor;border-radius:999px;white-space:nowrap;justify-self:end;
+  padding:4px 10px;border:1px solid currentColor;border-radius:2px;white-space:nowrap;justify-self:end;
 }
-.tag.test{color:var(--teal);background:#39dccf14}
-.tag.dev{color:var(--amber);background:#f5b95714}
+.tag.test{color:var(--teal)}
+.tag.dev{color:var(--amber)}
 a.tag{text-decoration:none}
 a.tag.dev:hover{background:#f5b95729;color:var(--amber)}
 a.tag.test:hover{background:#39dccf29;color:var(--teal)}
 
 /* PUSH row: the game's own blues and gold for a little arcade energy. */
-.push-row{
-  background:radial-gradient(120% 140% at 0% 0%,#1688d42b 0%,transparent 55%),
-    radial-gradient(90% 120% at 100% 100%,#ffd45f1c 0%,transparent 60%),
-    linear-gradient(150deg,var(--card-a),var(--card-b));
-}
+.ledger .push-row{background:#13284a;padding:28px;border:0;border-radius:4px;margin-block:16px}
+.push-row p{color:#d3ddef}
+.push-row p.sub,.push-row .stack{color:#9fb1cf}
+.push-row a{color:#ffd45f}
+.push-row + .row{border-top:0}
 .push-logo{margin:0}
-.push-logo img{display:block;width:100%;max-width:240px;height:auto;filter:drop-shadow(0 6px 18px #24a2ee66)}
+.push-logo img{display:block;width:100%;max-width:240px;height:auto}
 .push-ver{color:#ffd45f;font-family:var(--font-mono);font-size:12.5px;white-space:nowrap}
 a.tag.push-play{color:#0b1629;background:#ffd45f;border-color:#ffd45f;font-weight:600}
 a.tag.push-play:hover{background:#ffe48f;border-color:#ffe48f;color:#0b1629}
-.push-row:hover{border-color:#24a2ee}
 @media (prefers-reduced-motion:no-preference){
   .push-logo img{transition:transform .25s}
   .push-row:hover .push-logo img{transform:rotate(-2deg) scale(1.04)}
@@ -161,8 +162,7 @@ a.tag.push-play:hover{background:#ffe48f;border-color:#ffe48f;color:#0b1629}
 
 .join{
   display:flex;justify-content:space-between;align-items:center;gap:24px 40px;flex-wrap:wrap;
-  padding:30px 32px;border:1px solid var(--line-card);border-radius:17px;
-  background:linear-gradient(150deg,var(--card-a),var(--card-b));
+  padding:6px 0 6px 24px;border-left:3px solid var(--cyan);
 }
 .join>div{flex:1 1 320px;min-width:0}
 .join p{margin:0;max-width:58ch;color:#cbd0de}
@@ -184,14 +184,14 @@ a.tag.push-play:hover{background:#ffe48f;border-color:#ffe48f;color:#0b1629}
 .contact-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px 48px;align-items:center}
 .contact-logo{
   width:clamp(220px,27vw,300px);height:auto;display:block;
-  filter:drop-shadow(0 14px 26px #000c) drop-shadow(0 0 42px #5968d766);
+  filter:drop-shadow(0 10px 22px #000b);
 }
 .links{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 .btn{
-  font-family:var(--font-mono);font-size:14px;text-decoration:none;color:#dedcf1;
-  padding:12px 20px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;white-space:nowrap;
+  font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--fg-strong);
+  padding:10px 20px;border:1px solid #4a505b;border-radius:3px;background:transparent;white-space:nowrap;
 }
-.btn:hover{background:#292744;border-color:var(--cyan);color:#fff}
+.btn:hover{background:#1d2026;border-color:var(--cyan);color:#fff}
 .btn.primary{background:var(--cyan);color:var(--ink);border-color:var(--cyan);font-weight:500}
 .btn.primary:hover{background:var(--cyan-hi);border-color:var(--cyan-hi);color:var(--ink)}
 .todo{color:var(--dim);font-family:var(--font-mono);font-size:12.5px;margin-top:20px}
@@ -208,63 +208,123 @@ footer .legal a:hover{color:var(--cyan-hi)}
 .row-gallery summary,.gallery-close{
   display:inline-flex;align-items:center;gap:10px;list-style:none;cursor:pointer;user-select:none;
   font-family:var(--font-mono);font-size:13px;color:#dedcf1;
-  padding:9px 16px;border:1px solid #3c405d;border-radius:10px;background:#141a2e;
+  padding:9px 16px;border:1px solid #4a505b;border-radius:3px;background:transparent;
 }
 .row-gallery summary::-webkit-details-marker{display:none}
 .row-gallery summary::before{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);margin-right:2px}
 .row-gallery[open] summary::before{transform:rotate(45deg) translate(-2px,-2px)}
-.row-gallery summary:hover,.gallery-close:hover{background:#292744;border-color:var(--cyan);color:#fff}
+.row-gallery summary:hover,.gallery-close:hover{background:#1d2026;border-color:var(--cyan);color:#fff}
 .row-gallery summary:focus-visible,.gallery-close:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 .gallery-close{margin-top:18px}
 .gallery-close::before{content:"";width:7px;height:7px;border-left:2px solid currentColor;border-top:2px solid currentColor;transform:rotate(45deg) translate(2px,2px);margin-right:2px}
 .row-gallery .sum-close,.row-gallery[open] .sum-open{display:none}
 .row-gallery[open] .sum-close{display:inline}
-.sum-count{font-size:11px;color:var(--muted);border:1px solid #3c405d;border-radius:999px;padding:1px 8px}
+.sum-count{font-size:11px;color:var(--muted);border:1px solid #4a505b;border-radius:2px;padding:1px 7px}
 .row-gallery[open]{margin-top:18px;padding-top:22px;border-top:1px solid var(--line)}
 .row-gallery[open] summary{margin-bottom:18px}
 .row .show-lede{max-width:none;margin:0 0 18px;color:var(--muted);font-size:15px}
-.feature{display:block;border:1px solid var(--line-card);border-radius:17px;overflow:hidden;background:var(--panel);box-shadow:0 18px 60px #04071480,0 0 60px #5968d724;cursor:zoom-in}
+.feature{display:block;border:1px solid var(--line-card);border-radius:4px;overflow:hidden;background:var(--panel);cursor:zoom-in}
 .feature img{display:block;width:100%;height:auto}
-.feature:hover{border-color:#5968d7}
+.feature:hover{border-color:var(--cyan)}
 .shots{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:14px}
-.shot{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;width:100%;height:100%;padding:10px 10px 14px;border:1px solid var(--line-card);border-radius:14px;background:linear-gradient(150deg,var(--card-a),var(--card-b));cursor:zoom-in}
-.shot:hover{border-color:#5968d7}
+.shot{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;width:100%;height:100%;padding:0;cursor:zoom-in}
+.shot:hover img{border-color:var(--cyan)}
 .shot:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
-.shot img{width:100%;height:auto;display:block;border-radius:8px;border:1px solid var(--line);margin-bottom:8px}
-.shot-t{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-strong);font-size:16px;padding-inline:4px}
-.shot-c{font-size:13px;color:var(--muted);line-height:1.45;padding-inline:4px}
+.shot img{width:100%;height:auto;display:block;border-radius:3px;border:1px solid var(--line-card);margin-bottom:8px}
+.shot-t{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-strong);font-size:16px;}
+.shot-c{font-size:13px;color:var(--muted);line-height:1.45}
 /* Scrap County row: the game's font (Graduate) on the title, in-game pictures always showing, three across. */
 #scrap-county h3{font-family:Graduate,var(--font-display);font-weight:400;letter-spacing:.02em}
 .row p.sc-lede{grid-column:1/-1;max-width:none;margin:8px 0 0;color:var(--muted);font-size:15px}
 .sc-shots{grid-column:1/-1;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.sc-shots .shot{padding:0;border-radius:12px;overflow:hidden}
-.sc-shots .shot img{margin:0;border:0;border-radius:0}
-#lightbox{border:1px solid var(--line-card);border-radius:16px;background:#0a0f1c;color:var(--fg);padding:0;width:min(1200px,96vw);max-height:94vh;overflow:hidden}
-#lightbox::backdrop{background:#04071acc}
+.sc-shots .shot img{margin:0}
+#lightbox{border:1px solid var(--line-card);border-radius:4px;background:var(--bg);color:var(--fg);padding:0;width:min(1200px,96vw);max-height:94vh;overflow:hidden}
+#lightbox::backdrop{background:#000000d0}
 .lb-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid var(--line-soft)}
 .lb-bar strong{font-family:var(--font-display);text-transform:uppercase;letter-spacing:.08em;color:var(--fg-strong);margin-right:12px}
 .lb-bar span{color:var(--muted);font-size:13px}
 .lb-stage{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px}
-.lb-stage img{width:100%;max-height:74vh;object-fit:contain;display:block;border-radius:8px}
-#lightbox button{all:unset;cursor:pointer;color:var(--fg-strong);font-size:26px;line-height:1;padding:10px 14px;border:1px solid #3c405d;border-radius:10px;background:#141a2e}
+.lb-stage img{width:100%;max-height:74vh;object-fit:contain;display:block}
+#lightbox button{all:unset;cursor:pointer;color:var(--fg-strong);font-size:26px;line-height:1;padding:10px 14px;border:1px solid #4a505b;border-radius:3px;background:transparent}
 #lightbox button:hover{border-color:var(--cyan)}
 #lightbox button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 @media (max-width:760px){.lb-stage{grid-template-columns:minmax(0,1fr)}.lb-stage #lb-prev,.lb-stage #lb-next{display:none}.lb-bar span{display:block}}
 
 @media (max-width:760px){
-  .row{grid-template-columns:minmax(0,1fr);gap:12px;padding:22px 20px}
+  .row{grid-template-columns:minmax(0,1fr);gap:12px;padding:26px 0}
+  .ledger .push-row{padding:22px 20px}
   .tag{justify-self:start;order:-1}
   .about{grid-template-columns:minmax(0,1fr)}
   header.top{padding-block:28px 24px}
   .wordmark{font-size:clamp(40px,12.5vw,80px)}
   .contact-grid{grid-template-columns:minmax(0,1fr)}
   .contact-logo{width:min(240px,70%);margin-inline:auto}
-  .join{padding:24px 20px}
+  .join{padding:4px 0 4px 18px}
   .sc-shots{grid-template-columns:minmax(0,1fr)}
 }
 @media (prefers-reduced-motion:no-preference){
-  .row,.btn,header.top nav a{transition:border-color .15s,background-color .15s}
-  .row:hover{border-color:#5968d7}
+  .btn,header.top nav a{transition:border-color .15s,background-color .15s}
+}
+
+/* Take 2 "Glow": same page and layout, turned up. Violet and cyan light behind the page (the logo's colours),
+   gradient wordmark with the logo beside it, each project on a softly lit panel, glowing buttons and tags. */
+body{
+  font-size:17px;
+  background:
+    radial-gradient(1000px 620px at 8% 0,#3a2a78aa,#0000 62%),
+    radial-gradient(1000px 700px at 100% 6%,#0f5568aa,#0000 62%),
+    radial-gradient(1100px 800px at 0 46%,#0f556855,#0000 62%),
+    radial-gradient(1100px 800px at 100% 72%,#3a2a7877,#0000 62%),
+    radial-gradient(1200px 700px at 50% 100%,#3a2a7899,#0000 62%),
+    #0a0b10;
+}
+.wrap{max-width:1120px}
+header.top{padding-block:40px 34px;border-bottom:0;position:relative}
+header.top::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--brand-gradient);box-shadow:0 0 22px 1px #5968d7}
+.brand{display:flex;align-items:center;gap:22px}
+.brand-logo{width:clamp(72px,9vw,116px);height:auto;flex:none;filter:drop-shadow(0 0 26px #5968d7aa)}
+.wordmark{background:linear-gradient(90deg,#f3f4f6 0 58%,#29c9d2 66%,#5968d7 84%,#a14ad6);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px #5968d766)}
+.wordmark .dev{color:transparent}
+header.top nav a:hover{text-shadow:0 0 16px var(--cyan)}
+.pfx{border-bottom-color:#ffffff14}
+
+section{border-bottom-color:#ffffff14}
+h2{font-size:clamp(34px,5.5vw,52px);padding-bottom:14px;position:relative}
+h2::after{content:"";position:absolute;left:0;bottom:0;width:72px;height:4px;border-radius:2px;background:var(--brand-gradient);box-shadow:0 0 18px #5968d7}
+.sec-head{margin-bottom:30px}
+
+.ledger{gap:20px}
+.ledger .row{
+  position:relative;padding:34px;border:1px solid #ffffff1c;border-radius:12px;
+  background:linear-gradient(160deg,#1a1d27e6,#11131ae6);
+  box-shadow:0 30px 60px -40px #a14ad6,inset 0 1px 0 #ffffff12;
+}
+.ledger .row::before{content:"";position:absolute;left:24px;right:24px;top:-1px;height:2px;border-radius:2px;background:var(--brand-gradient);opacity:.9}
+.ledger .push-row{margin-block:0;background:linear-gradient(160deg,#17325f,#10213f);border-color:#65c7ff55;box-shadow:0 30px 60px -40px #24a2ee,inset 0 1px 0 #ffffff14}
+.ledger .push-row::before{background:linear-gradient(90deg,#24a2ee,#ffd45f)}
+.push-row + .row{border-top:1px solid #ffffff1c}
+.row h3{font-size:34px}
+.tag{box-shadow:0 0 18px -4px currentColor;background:#0a0b1080}
+.sc-shots{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:12px;margin-top:6px}
+.sc-shots li:first-child{grid-row:1/3}
+.sc-shots .shot img{height:100%;object-fit:cover;border-radius:8px;border-color:#ffffff26;box-shadow:0 0 44px -18px #29c9d2}
+.row-gallery summary{border-color:#5968d7;box-shadow:0 0 18px -8px #5968d7}
+
+.btn{border-radius:8px}
+.btn.primary{background:var(--brand-gradient);color:#fff;border-color:transparent;font-weight:700;box-shadow:0 0 30px -6px #5968d7,0 0 0 1px #ffffff22 inset}
+.btn.primary:hover{background:var(--brand-gradient);color:#fff;filter:brightness(1.15)}
+a.tag.push-play{box-shadow:0 0 26px -6px #ffd45f}
+.pfx-form input{border-radius:8px;background:#0a0b10aa}
+
+.join{border-left:0;padding:30px 34px;border:1px solid #ffffff1c;border-radius:12px;background:linear-gradient(160deg,#1a1d27e6,#11131ae6);box-shadow:0 30px 60px -40px #29c9d2}
+.tools li{padding-block:13px;border-color:#ffffff1c}
+.tools span:last-child{text-shadow:0 0 14px #29c9d288}
+.contact-logo{filter:drop-shadow(0 0 46px #5968d7aa)}
+@media (max-width:760px){
+  .sc-shots{grid-template-columns:minmax(0,1fr);grid-template-rows:none}
+  .sc-shots li:first-child{grid-row:auto}
+  .ledger .row{padding:24px 20px}
+  .brand{gap:14px}
 }
 </style>
 </head>
@@ -272,6 +332,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
 <div class="wrap">
   <header class="top">
     <div class="brand">
+      <img class="brand-logo" src="/bvnger-logo.png" width="512" height="512" alt="">
       <h1 class="wordmark">BVNGER<span class="dev">.dev</span></h1>
       <div class="rule" aria-hidden="true"></div>
     </div>
@@ -284,8 +345,8 @@ footer .legal a:hover{color:var(--cyan-hi)}
     </nav>
   </header>
 
-  <div class="pfx">
-    <canvas id="pfx" role="img" aria-label="Neon dots that form a spinning ball and spell out any word a visitor types"></canvas>
+  <div class="pfx pfx-closed">
+    <div class="pfx-stage" id="pfx-stage"><canvas id="pfx" role="img" aria-label="Neon dots that form a spinning ball and spell out any word a visitor types"></canvas></div>
     <form class="pfx-form" id="pfx-form" autocomplete="off">
       <input id="pfx-word" type="text" maxlength="12" placeholder="Type a word" aria-label="Type a word for the dots to spell" enterkeyhint="go">
       <button class="btn primary" type="submit">Create</button>
@@ -311,7 +372,7 @@ footer .legal a:hover{color:var(--cyan-hi)}
         <p class="sc-lede">Here are some sample in-game images of the current state.</p>
         <ul class="sc-shots">
           <li><button type="button" class="shot" data-full="/scrap-county/shots/road.webp" data-title="Scrap County" data-cap="Country road">
-            <img src="/scrap-county/shots/road-thumb.webp" width="640" height="360" loading="lazy" decoding="async" alt="Scrap County in-game view of a country road through grassy hills">
+            <img src="/scrap-county/shots/road.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Scrap County in-game view of a country road through grassy hills">
           </button></li>
           <li><button type="button" class="shot" data-full="/scrap-county/shots/dry-creek.webp" data-title="Scrap County" data-cap="Dry creek">
             <img src="/scrap-county/shots/dry-creek-thumb.webp" width="640" height="360" loading="lazy" decoding="async" alt="Scrap County in-game view of a dry rocky creek channel under trees">
@@ -486,7 +547,6 @@ footer .legal a:hover{color:var(--cyan-hi)}
   d.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1)});
 })();
 </script>
-<script src="/rain.js" defer></script>
 <script src="/particles.js" defer></script>
 </body>
 </html>
