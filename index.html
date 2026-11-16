@@ -293,7 +293,13 @@ h2::after{content:"";position:absolute;left:0;bottom:0;width:72px;height:4px;bor
   background:linear-gradient(160deg,#1a1d27e6,#11131ae6);
   box-shadow:0 30px 60px -40px #a14ad6,inset 0 1px 0 #ffffff12;
 }
-.ledger .row::before{content:"";position:absolute;left:24px;right:24px;top:-1px;height:2px;border-radius:2px;background:var(--brand-gradient);opacity:.9}
+/* Gradient line along the top of each card. It is a full-size layer with the card's rounded shape, masked so only
+   its top 2px shows; that makes the line run edge to edge and bend round the corners. */
+.ledger .row::before,.join::before{
+  content:"";position:absolute;inset:-1px;border-radius:12px;padding:2px 0 0;background:var(--brand-gradient);pointer-events:none;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+}
 .ledger .push-row{margin-block:0;background:linear-gradient(160deg,#17325f,#10213f);border-color:#65c7ff55;box-shadow:0 30px 60px -40px #24a2ee,inset 0 1px 0 #ffffff14}
 .ledger .push-row::before{background:linear-gradient(90deg,#24a2ee,#ffd45f)}
 .push-row + .row{border-top:1px solid #ffffff1c}
@@ -305,12 +311,12 @@ h2::after{content:"";position:absolute;left:0;bottom:0;width:72px;height:4px;bor
 .row-gallery summary{border-color:#5968d7;box-shadow:0 0 18px -8px #5968d7}
 
 .btn{border-radius:8px}
-.btn.primary{background:var(--brand-gradient);color:#fff;border-color:transparent;font-weight:700;box-shadow:0 0 30px -6px #5968d7,0 0 0 1px #ffffff22 inset}
+.btn.primary{background:var(--brand-gradient);color:#fff;border-color:transparent;font-weight:700;box-shadow:0 0 30px -6px #5968d7}
 .btn.primary:hover{background:var(--brand-gradient);color:#fff;filter:brightness(1.15)}
 a.tag.push-play{box-shadow:0 0 26px -6px #ffd45f}
 .pfx-form input{border-radius:8px;background:#0a0b10aa}
 
-.join{border-left:0;padding:30px 34px;border:1px solid #ffffff1c;border-radius:12px;background:linear-gradient(160deg,#1a1d27e6,#11131ae6);box-shadow:0 30px 60px -40px #29c9d2}
+.join{position:relative;border-left:0;padding:30px 34px;border:1px solid #ffffff1c;border-radius:12px;background:linear-gradient(160deg,#1a1d27e6,#11131ae6);box-shadow:0 30px 60px -40px #29c9d2}
 .tools li{padding-block:13px;border-color:#ffffff1c}
 .tools span:last-child{text-shadow:0 0 14px #29c9d288}
 .contact-logo{filter:drop-shadow(0 0 46px #5968d7aa)}
