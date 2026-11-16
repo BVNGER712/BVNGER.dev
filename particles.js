@@ -17,13 +17,6 @@
   var INTRO = reduce ? 0.001 : 4;                    // seconds the soft glow takes to open into the orb when the page loads
   var LIGHT_UP = reduce ? 0.001 : 1.5;               // seconds the dots take to fade in when the page loads
   var TRAVEL = reduce ? 0 : 8;                     // seconds the small orb floats around the page before it settles
-  // The strip can start closed (class "pfx-closed" on its box): then the small orb keeps floating behind the page,
-  // and the first word a visitor types slowly opens the strip before the dots spell it.
-  var stage = document.getElementById('pfx-stage'), box0 = canvas.closest('.pfx');
-  var closed = !!(stage && box0 && box0.classList.contains('pfx-closed'));
-  if (closed && reduce) { box0.classList.remove('pfx-closed'); closed = false; }
-  var DROP = 1.6;                                    // seconds the strip takes to open
-  var dropStart = -1, pendingWord = '', flyWait = false;
 
   // Preview hooks for recording videos of the effect: ?pfxt=<ms> draws one still frame at that time,
   // and ?pfxword=WORD&pfxwordat=<ms> acts as if a visitor typed WORD at that time.
@@ -182,10 +175,6 @@
     // The orb stays small and packed until it arrives, then opens. Every page load floats a different way.
     seg.start = TRAVEL; seg.packed = true; nextSplash = TRAVEL + INTRO * 0.7;
     flyEnd = openStart = TRAVEL; openLen = INTRO;
-    // Strip still closed: the orb never settles on its own. It keeps floating until a word is typed.
-    flyWait = closed;
-    if (dropStart >= 0) dropStart = 0;               // the clock starts over, so a strip that was opening starts over too
-    if (closed) { flyEnd = openStart = Infinity; seg.start = Infinity; nextSplash = Infinity; }
     var pick = freezeAt === null ? Math.random : rnd;
     for (var f = 0; f < flyPh.length; f++) flyPh[f] = pick() * Math.PI * 2;
   }
@@ -279,7 +268,7 @@
   // here is sine waves and smooth curves, so its speed never changes suddenly. If a visitor types a word while it's
   // floating, it glides home in the time the word takes to form.
   function flyPath(cy, vw, vh){
-    var p = clock / TRAVEL, settle = flyWait ? 1 : 1 - ease(p < 0.5 ? 0 : p > 1 ? 1 : (p - 0.5) / 0.5), enter = 1 - ease(p > 0.35 ? 1 : p / 0.35);
+    var p = clock / TRAVEL, settle = 1 - ease(p < 0.5 ? 0 : p > 1 ? 1 : (p - 0.5) / 0.5), enter = 1 - ease(p > 0.35 ? 1 : p / 0.35);
     var th = p * Math.PI * 2 + 0.5 * Math.sin(p * 7 + flyPh[0]), ax = vw * 0.34, ay = Math.min(vh * 0.26, ax * 0.7);
     flyX = settle * (ax * Math.sin(th) + ax * 0.18 * Math.sin(clock * 1.1 + flyPh[1]) + ax * 0.1 * Math.sin(clock * 2.3 + flyPh[2]));
     flyY = settle * (ay * Math.sin(th * 2) + ay * 0.2 * Math.sin(clock * 1.4 + flyPh[3]) + ay * 0.1 * Math.sin(clock * 2.1 + flyPh[4])) - (cy + ay * 1.4 + R) * enter;
@@ -430,15 +419,6 @@
 
   function step(dt){
     clock += dt;
-    if (closed && dropStart >= 0) {
-      // Open the strip a little more each frame. Once it's fully open, spell the word that was typed.
-      var dk = (clock - dropStart) / DROP;
-      stage.style.height = Math.round(H * ease(dk > 1 ? 1 : dk)) + 'px';
-      if (dk >= 1) {
-        closed = false; box0.classList.remove('pfx-closed'); stage.style.height = '';
-        showWord(pendingWord); pendingWord = '';
-      }
-    }
     var e = clock - seg.start;
     moved = reduce ? 0 : clock;                     // with reduced motion the ball holds still
     var spin = moved * 0.45;
@@ -527,13 +507,6 @@
     var word = String(raw || '').trim().split(/\s+/)[0].slice(0, 12).toUpperCase();
     if (word) begin(word, HOLD_TYPED, true);
   }
-  // A visitor typed something. While the strip is closed, open it first and spell the word once it's open.
-  function request(raw){
-    if (!String(raw || '').trim()) return;
-    if (!closed) { showWord(raw); return; }
-    pendingWord = raw;
-    if (dropStart < 0) dropStart = clock;
-  }
 
   var last = 0;
   function frame(ts){
@@ -550,13 +523,13 @@
       [].forEach.call(document.querySelectorAll('canvas'), function(el){ if (el !== canvas && el !== gal && el !== cloud) el.style.visibility = 'hidden'; });
       var typedDone = false;
       while (clock < freezeAt) {
-        if (fakeWord && !typedDone && clock >= fakeAt) { request(fakeWord); typedDone = true; }
+        if (fakeWord && !typedDone && clock >= fakeAt) { showWord(fakeWord); typedDone = true; }
         step(1 / 60);
       }
       draw();
       return;
     }
-    if (form) form.addEventListener('submit', function(e){ e.preventDefault(); request(input.value); input.value = ''; });
+    if (form) form.addEventListener('submit', function(e){ e.preventDefault(); showWord(input.value); input.value = ''; });
     var lastW = W;
     window.addEventListener('resize', function(){
       clearTimeout(start.t);

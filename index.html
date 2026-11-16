@@ -93,15 +93,9 @@ header.top nav a:hover{color:#fff;border-bottom-color:var(--cyan)}
 .rule{display:none}
 
 /* Particle wordmark under the header (particles.js). */
-/* The strip starts closed, so the word box sits right under the header while the small orb floats around behind the
-   page. Typing a word slowly opens the strip (particles.js sets its height), then the dots spell the word. */
 .pfx{padding-block:18px 34px;border-bottom:1px solid var(--line-soft)}
-.pfx-stage{overflow:hidden}
-.pfx-closed .pfx-stage{height:0}
-.pfx-closed{padding-block:28px}
 #pfx{display:block;width:100%;height:clamp(220px,32vw,360px)}
 .pfx-form{display:flex;justify-content:center;gap:8px;margin-top:8px}
-.pfx-closed .pfx-form{margin-top:0}
 .pfx-form input{
   font-family:var(--font-mono);font-size:14px;color:var(--fg-strong);background:var(--panel);
   border:1px solid var(--line-card);border-radius:3px;padding:11px 14px;width:min(260px,100%);min-width:0;
@@ -345,8 +339,8 @@ a.tag.push-play{box-shadow:0 0 26px -6px #ffd45f}
     </nav>
   </header>
 
-  <div class="pfx pfx-closed">
-    <div class="pfx-stage" id="pfx-stage"><canvas id="pfx" role="img" aria-label="Neon dots that form a spinning ball and spell out any word a visitor types"></canvas></div>
+  <div class="pfx">
+    <canvas id="pfx" role="img" aria-label="Neon dots that form a spinning ball and spell out any word a visitor types"></canvas>
     <form class="pfx-form" id="pfx-form" autocomplete="off">
       <input id="pfx-word" type="text" maxlength="12" placeholder="Type a word" aria-label="Type a word for the dots to spell" enterkeyhint="go">
       <button class="btn primary" type="submit">Create</button>
@@ -547,6 +541,7 @@ a.tag.push-play{box-shadow:0 0 26px -6px #ffd45f}
   d.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1)});
 })();
 </script>
+<script src="/rain.js" defer></script>
 <script src="/particles.js" defer></script>
 </body>
 </html>
